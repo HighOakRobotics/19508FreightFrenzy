@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystem;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class DriveTrainMecanum {
+public class EddyAutoBlue {
+    /*
     private final DcMotorEx frontLeft;
     private final DcMotorEx backLeft;
     private final DcMotorEx frontRight;
@@ -139,4 +140,6 @@ public class DriveTrainMecanum {
         setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         positionReport();
     }
+    */
+
 }

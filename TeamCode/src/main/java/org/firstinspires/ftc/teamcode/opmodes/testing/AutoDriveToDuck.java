@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.subsystems.operation;
+package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumTest;
 import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 import org.firstinspires.ftc.teamcode.subsystems.Waver;
 
-@Autonomous(name = "Auto Drive To Duck Test", group = "Quackology")
+@Autonomous(name = "To duck", group = "Quackology")
 //@Disabled
 public class AutoDriveToDuck extends LinearOpMode {
     private org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumTest drive;
