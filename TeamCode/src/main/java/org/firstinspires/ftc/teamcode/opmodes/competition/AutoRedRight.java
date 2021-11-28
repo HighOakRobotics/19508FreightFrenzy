@@ -33,6 +33,7 @@ public class AutoRedRight extends SequoiaOpMode {
 //    Arm arm = new Arm();
 //    Gripper gripper = new Gripper();
     ElapsedTime runtime = new ElapsedTime();
+    //this code does not work
 
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
