@@ -32,6 +32,9 @@ public class TeleOperated extends SequoiaOpMode {
     public void runTriggers() {
         gamepad1H.sticksButton(0.01).onPressWithCancel(new GamepadDriveTask(gamepad1, drivetrain));
 
+        //fhwieohfioh
+        //test?
+
 //        gamepad1H.leftButton().onPress(new InstantTask(() -> arm.setMode(Arm.ArmMode.HORIZONTAL)));
 //        gamepad1H.rightButton().onPress(new InstantTask(() -> arm.setMode(Arm.ArmMode.VERTICAL)));
 //        gamepad1H.leftBumperButton().onPress(new InstantTask(() -> {
