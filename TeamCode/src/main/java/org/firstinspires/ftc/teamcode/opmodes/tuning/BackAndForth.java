@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
 
 @Config
 @Autonomous(group = "tuning")
+@Disabled
 public class BackAndForth extends LinearOpMode {
 
 	public static double DISTANCE = 50;

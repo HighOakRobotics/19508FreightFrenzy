@@ -36,6 +36,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.DriveConstants.rpmToVelo
 
 @Config
 @Autonomous(group = "tuning")
+@Disabled
 public class AutomaticFeedforwardTuner extends LinearOpMode {
 	public static final double MAX_POWER = 0.7;
 	public static final double DISTANCE = 100; // in

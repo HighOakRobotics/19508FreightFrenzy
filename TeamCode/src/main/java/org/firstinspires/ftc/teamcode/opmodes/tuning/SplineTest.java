@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
  */
 
 @Autonomous(group = "tuning")
+@Disabled
 public class SplineTest extends LinearOpMode {
 	@Override
 	public void runOpMode() throws InterruptedException {

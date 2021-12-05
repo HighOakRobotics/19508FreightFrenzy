@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TeleOperated extends SequoiaOpMode {
     private final Mecanum drivetrain = new Mecanum();
 //    private final Arm arm = new Arm();
-//    private final Rotator rotator = new Rotator();
+    private final Rotator rotator = new Rotator();
 //    private final Gripper gripper = new Gripper();
 
     @Override
@@ -45,14 +45,14 @@ public class TeleOperated extends SequoiaOpMode {
 //        gamepad1H.leftTriggerButton(0.01).whilePressed(new InstantTask(() -> arm.modifySetpoint(-0.75 * gamepad1.left_trigger)));
 //        gamepad1H.rightTriggerButton(0.01).whilePressed(new InstantTask(() -> arm.modifySetpoint(0.75 * gamepad1.right_trigger)));
 //
-//        AtomicInteger rotationdir = new AtomicInteger(1);
-//        gamepad1H.aToggleButton().risingWithCancel(new StartEndTask(() -> {
-//            rotator.setSetpoint(10 * rotationdir.get());
-//        }, () -> {
-//            rotator.setSetpoint(0);
-//            rotationdir.updateAndGet(v -> v * -1);
-//        }));
-//
+        AtomicInteger rotationdir = new AtomicInteger(1);
+        gamepad1H.aToggleButton().risingWithCancel(new StartEndTask(() -> {
+            rotator.setSetpoint(10 * rotationdir.get());
+        }, () -> {
+            rotator.setSetpoint(0);
+            rotationdir.updateAndGet(v -> v * -1);
+        }));
+
 //        gamepad1H.bToggleButton().risingWithCancel(new StartEndTask(() -> gripper.setState(Gripper.GripperState.OPEN), () -> gripper.setState(Gripper.GripperState.CLOSED)));
     }
 }

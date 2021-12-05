@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class DriveTrainMecanumTest {
+public class DriveTrainMecanumT265 {
     private final DcMotorEx frontLeft;
     private final DcMotorEx backLeft;
     private final DcMotorEx frontRight;
@@ -23,7 +23,7 @@ public class DriveTrainMecanumTest {
     private Telemetry telemetry;
     private ElapsedTime runtime;
 
-    public DriveTrainMecanumTest(HardwareMap hardwareMap, Telemetry telemetry) {
+    public DriveTrainMecanumT265(HardwareMap hardwareMap, Telemetry telemetry) {
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontleft");
         backLeft = hardwareMap.get(DcMotorEx.class, "backleft");
         backRight = hardwareMap.get(DcMotorEx.class, "backright");
@@ -31,7 +31,6 @@ public class DriveTrainMecanumTest {
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        //frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.telemetry = telemetry;
         runtime = new ElapsedTime();

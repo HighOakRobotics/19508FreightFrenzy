@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
 //@Disabled
 public class EddyAutoBlueLeft extends LinearOpMode {
     private org.firstinspires.ftc.teamcode.subsystems.EddyMecanum drive;
-    private org.firstinspires.ftc.teamcode.subsystems.EddyRotator rotator;
+    //private org.firstinspires.ftc.teamcode.subsystems.EddyRotator rotator;
 //    private org.firstinspires.ftc.teamcode.subsystems.Waver waver;
 //    private org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV eye;
     private int pos;
@@ -20,8 +20,8 @@ public class EddyAutoBlueLeft extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         drive = new org.firstinspires.ftc.teamcode.subsystems.EddyMecanum(hardwareMap, telemetry);
         drive.autoInit();
-        rotator = new org.firstinspires.ftc.teamcode.subsystems.EddyRotator(hardwareMap, telemetry);
-        rotator.autoInit();
+        //rotator = new org.firstinspires.ftc.teamcode.subsystems.EddyRotator(hardwareMap, telemetry);
+        //rotator.autoInit();
 
 //        waver = new org.firstinspires.ftc.teamcode.subsystems.Waver(hardwareMap);
 //        eye = new org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV(0, 140, 280, 320, 240);
