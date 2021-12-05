@@ -6,8 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+
+import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.tasks.GamepadDriveTask;
 
@@ -21,7 +24,7 @@ public class SwingArmOpMode extends OpMode {
     private SwingArm arm;
     //    private final Arm arm = new Arm();
     //private final SwingArm arm = new SwingArm();
-    // final Rotator rotator = new Rotator();
+    private Carousel carousel;
 //    private final Gripper gripper = new Gripper();
 
     @Override
@@ -29,6 +32,8 @@ public class SwingArmOpMode extends OpMode {
         drive = new DriveTrainMecanumBasic(hardwareMap, telemetry);
         intake = new Intake(hardwareMap);
         intake.init();
+        carousel = new Carousel(hardwareMap);
+        carousel.init();
         arm = new SwingArm(hardwareMap);
         arm.init();
     }
@@ -59,12 +64,20 @@ public class SwingArmOpMode extends OpMode {
         else if (gamepad1.dpad_down) intake.stop();
         else if (gamepad1.dpad_left) intake.out();
 
+        if(gamepad1.b) carousel.red();
+        else if(gamepad1.a) carousel.stop();
+        else if(gamepad1.x) carousel.blue();
+
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
         else if (gamepad2.dpad_up) arm.lift();
-        else if (gamepad2.dpad_down) arm.intake();
+        else if (gamepad2.dpad_down) arm.home();
+        else if(gamepad2.a) arm.intake();
+        else if(gamepad2.b) arm.hold();
+        else if(gamepad2.y) arm.level3(false);
+        else if(gamepad2.right_bumper) arm.release();
+        else if(gamepad2.left_bumper) arm.retrieve();
 
-        if (gamepad2.a) arm.test();
     }
 
     /*

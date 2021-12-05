@@ -7,9 +7,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SwingArm {
     protected HardwareMap hwMap;
     Servo hand, wrist, shoulder;
-    double handPos = 0.5; //hold position 0.3 intake
-    double wristPos = 0.5; // up 0 pposition
-    double sPos = 0.45; // middle;
+    double hIntake = 0.3; //hold position 0.3 intake
+    double hHome = 0.65;//home position too much
+    double hRelease = 0.1;
+    double wLevel2 = 0.45; // up 0 pposition
+    double wHome= 0.7;
+    double wLevel3 = 0.2;
+    double sPos = 0.57; // middle   - more;
+    double sLeft = 0.22;//lower
+    double sRight = 0.9;
     public SwingArm (HardwareMap hwMap){
         this.hwMap = hwMap;
     }
@@ -53,29 +59,44 @@ public class SwingArm {
 
     public void handClose() {hand.setPosition(0.7);}
 
+    public void home(){
+        hand.setPosition(hHome);
+        wrist.setPosition(wHome);
+        shoulder.setPosition(sPos);
+    }
     public void intake() {
-        hand.setPosition(0.7);
-        wrist.setPosition(0.5);
+        hand.setPosition(hIntake);
+        wrist.setPosition(wHome + 0.5);//higher
+        shoulder.setPosition(sPos);
+    }
+    public void hold(){
+        hand.setPosition(0.4);
+        wrist.setPosition(0.55);
+        shoulder.setPosition(sPos);
     }
 
     public void lift() {
-        hand.setPosition(0.5);
-        wrist.setPosition(0.5);
-        if  (wrist.getPosition() > 0.5) {}
-        else shoulder.setPosition(0.5);
+        hand.setPosition(hHome);
+        wrist.setPosition(wLevel2);
+        if  (wrist.getPosition() > wLevel2) {}
+        else shoulder.setPosition(sPos);
     }
 
     public void left() {
-        if  (wrist.getPosition() > 0.5) {}
-        else shoulder.setPosition(0.3);
+        if  (wrist.getPosition() > wLevel2) {}
+        else shoulder.setPosition(sLeft);
     }
 
     public void right() {
-        if  (wrist.getPosition() > 0.5) {}
-        else shoulder.setPosition(0.7);
+        if  (wrist.getPosition() > wLevel2) {}
+        else shoulder.setPosition(sRight);
     }
 
-    public void level1() {
+    public void level1(boolean left) {
+        hand.setPosition(0.5);
+        wrist.setPosition(wHome);
+        if(left){ shoulder.setPosition(sLeft); }
+        else{shoulder.setPosition(sRight); }
 
     }
 
@@ -83,12 +104,20 @@ public class SwingArm {
 
     }
 
-    public void level3() {
+    public void level3(boolean left) {
+        hand.setPosition(0.5);
+        wrist.setPosition(wLevel3);
+        if(left){ shoulder.setPosition(sLeft); }
+        else{shoulder.setPosition(sRight); }
 
     }
 
     public void release() {
-        hand.setPosition(0);
+        hand.setPosition(hRelease);
+
+    }
+    public void retrieve(){
+        hand.setPosition(hHome);
     }
 
     public void back() {
