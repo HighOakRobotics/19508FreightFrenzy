@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
  */
 
 @Autonomous(group = "tuning")
+@Disabled
 public class TrackWidthTuner extends LinearOpMode {
 	public static double ANGLE = 180; // deg
 	public static int NUM_TRIALS = 5;

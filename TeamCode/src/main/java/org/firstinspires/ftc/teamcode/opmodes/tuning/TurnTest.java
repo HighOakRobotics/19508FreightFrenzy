@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
 
 @Config
 @Autonomous(group = "tuning")
+@Disabled
 public class TurnTest extends LinearOpMode {
 	public static double ANGLE = 90; // deg
 

@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
 
 @Config
 @Autonomous(group = "tuning")
+@Disabled
 public class FollowerPIDTuner extends LinearOpMode {
 	public static double DISTANCE = 48; // in
 
