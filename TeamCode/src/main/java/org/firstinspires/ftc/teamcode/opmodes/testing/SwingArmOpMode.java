@@ -68,13 +68,14 @@ public class SwingArmOpMode extends OpMode {
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
 
-        if (gamepad2.dpad_right) arm.right();
-        else if (gamepad2.dpad_left) arm.left();
-        else if (gamepad2.dpad_up) arm.lift();
-        else if (gamepad2.dpad_down) arm.home();
-        else if(gamepad2.a) arm.intake();
-        else if(gamepad2.b) arm.hold();
-        else if(gamepad2.y) arm.level3(false);
+        if (gamepad2.dpad_right) arm.deliver2(true);
+        else if (gamepad2.dpad_left) arm.intake();
+        else if (gamepad2.dpad_up) arm.deliver3(true);
+        else if (gamepad2.dpad_down) arm.deliver1(true);
+        else if(gamepad2.a) arm.deliver1(false);
+        else if(gamepad2.x ) arm.deliver2(false);
+        else if (gamepad2.b) arm.home();
+        else if(gamepad2.y) arm.deliver3(false);
         else if(gamepad2.right_bumper) arm.release();
         else if(gamepad2.left_bumper) arm.retrieve();
 
