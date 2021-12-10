@@ -7,20 +7,25 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SwingArm {
     protected HardwareMap hwMap;
     Servo hand, wrist, shoulder;
-    double hRelease = 0.1; //depend on the wrist position
-    double hIntake = 0.3; //hold position 0.3 intake
-    double hHome = 0.65;//home position too much
+    double hRelease3 = 0.3; //depend on the wrist position
+    double hRelease2 = 0.47;
+    double hRelease1 = 0.7;
+    double hHold3 = 0.6;
+    double hHold2 = 0.8;
+    double hIntake = 0.78; //hold position 0.3 intake
+    double hHome = 0.95;//home position too much
 
-    double wHome= 0.7;
-    double wLift = 0.5;
-    double wLevel1 = 0.6; //lowest;
-    double wLevel2 = 0.45; //
-    double wLevel3 = 0.2; //highest
+    double wHome= 0.69;
+    double wLift = 0.38;
+    double wLevel1 = 0.5; //lowest;
+    double wLevel2 = 0.38; //
+    double wLevel3 = 0.25; //highest
     double wTeam = 0; //team element up 0 pposition
 
-    double sMiddle = 0.57; // middle   - more;
+    double sMiddle = 0.6; // middle   - more;
     double sLeft = 0.22;//lower
-    double sRight = 0.9;
+    double sRight = 0.7; // no wire now 0.9;
+    boolean busy = false;
 
     public enum HandState {
         HOLD,
@@ -42,12 +47,7 @@ public class SwingArm {
     public enum ArmState {
         HOME,
         INTAKE,
-        DELIVER1L,
-        DELIVER2L,
-        DELIVER3L,
-        DELIVER1R,
-        DELIVER2R,
-        DELIVER3R
+        DELIVER
     }
     HandState hstate;
     WristState wstate;
@@ -64,6 +64,10 @@ public class SwingArm {
         shoulder = hwMap.get(Servo.class, "shoulder");
         astate = ArmState.HOME;
     }
+
+    public double getHandPos() {return hand.getPosition(); }
+    public double getWristPos() {return wrist.getPosition();}
+    public double getShoulderPos() {return shoulder.getPosition(); }
 
     public void autoDeliver(int level, boolean left) {
         hand.setPosition(0.5);
@@ -92,24 +96,30 @@ public class SwingArm {
 
     }
 
-    public void handClose() {hand.setPosition(0.7);}
-
     public void update(double hPos, double wPos, double sPos) {
-        double pos = hand.getPosition();
+        if (busy) return;
+
         hand.setPosition(hPos);
-        while (Math.abs(pos - hPos) > 0.05) {}
-
-        pos = wrist.getPosition();
         wrist.setPosition(wPos);
-        while (Math.abs(pos - wPos) > 0.001) {}
-
         shoulder.setPosition(sPos);
-        while (Math.abs(pos - sPos) > 0.001) {}
+        if ( Math.abs(hand.getPosition() - hPos ) > 0.01
+                || Math.abs(wrist.getPosition() - wPos ) > 0.01
+                || Math.abs(shoulder.getPosition() - sPos ) > 0.01) {
+            busy = true;
+        }
+        else
+            busy = false; //done
     }
 
+    public boolean isBusy() {return busy;}
+
     public void home(){
-        if (astate != ArmState.HOME && astate != ArmState.INTAKE)
+        if (astate != ArmState.HOME && astate != ArmState.INTAKE) {
             update(hHome, wLift, sMiddle);
+            astate = ArmState.HOME;
+            return;
+        }
+        if (busy) return;
 
         update(hHome, wHome, sMiddle);
         hstate = HandState.HOLD;
@@ -119,6 +129,8 @@ public class SwingArm {
     }
 
     public void intake() {
+        if (astate != ArmState.HOME) return;
+
         update(hIntake, wHome, sMiddle);
         hstate = HandState.PICKUP;
         wstate = WristState.HOME;
@@ -128,19 +140,19 @@ public class SwingArm {
 
     public void lift(int level) {
         if (level == -1) { // lift for swing
-            update(hand.getPosition(), wLift, shoulder.getPosition());
+            update(hHome, wLift, sMiddle);
         }
         else if (level == 1) {
-            update(hand.getPosition(), wLevel1, shoulder.getPosition());
+            wstate = WristState.LEVEL1;
+            update(hHome, wLevel1, shoulder.getPosition());
         }
         else if (level == 2) {
-            update(hand.getPosition(), wLevel2, shoulder.getPosition());
+            wstate = WristState.LEVEL2;
+            update(hHold2 , wLevel2, shoulder.getPosition());
         }
         else if (level == 3) {
             wstate = WristState.LEVEL3;
-            for (int i = 1; i <= 4; i++) {
-                update(hand.getPosition() - 0.05 , wrist.getPosition() - 0.05, shoulder.getPosition());
-            }
+            update(hHold3 , wLevel3, shoulder.getPosition());
         }
         else if (level == 4) {
             update(hand.getPosition(), wTeam, shoulder.getPosition());
@@ -163,54 +175,59 @@ public class SwingArm {
         sstate = sstate = ShoulderState.RIGHT;
     }
 
-    public void deliver3 (boolean left) {
-        if (astate == ArmState.HOME) lift(-1);
-
-        if (left) {
-            left();
-            sstate = ShoulderState.LEFT;
-            astate = ArmState.DELIVER3L;
-        }
-        else {
-            right();
-            sstate = ShoulderState.RIGHT;
-            astate = ArmState.DELIVER3R;
-        }
+    public void deliver3 () {
         lift(3);
-    }
-
-    public void deliver1(boolean left) {
-        if (left) {
-
-        }
-        else {
-
-        }
-        hand.setPosition(0.5);
-        wrist.setPosition(wHome);
-        if(left){ shoulder.setPosition(sLeft); }
-        else{shoulder.setPosition(sRight); }
+        astate = ArmState.DELIVER;
 
     }
 
-    public void deliver2(boolean left) {
+    public void deliver1() {
+        lift(1);
+        astate = ArmState.DELIVER;
+    }
 
+    public void deliver2() {
+        lift(2);
+        astate = ArmState.DELIVER;
     }
 
     public void release() {
-        hand.setPosition(hRelease);
-
+        if (wstate == WristState.LEVEL3) hand.setPosition(hRelease3);
+        if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
+        if (wstate == WristState.LEVEL1) hand.setPosition(hRelease1);
     }
+    
     public void retrieve(){
         hand.setPosition(hHome);
+        if (wstate == WristState.LEVEL1) wrist.setPosition(wLevel2);
     }
 
-    public void back() {
+    public void test(int indicator, int direction) {
+        double hpos = hand.getPosition();
+        double wpos = wrist.getPosition();
+        double spos = shoulder.getPosition();
 
-    }
-
-    public void test() {
-        autoDeliver(2, true);
+        if (indicator == 1) {
+            //test hand position
+            if (direction == 1 )
+                hand.setPosition(hpos + 0.000001);
+            else
+                hand.setPosition(hpos - 0.000001);
+        }
+        if (indicator == 2) {
+            //test hand position
+            if (direction == 1 )
+                wrist.setPosition(hpos + 0.000001);
+            else
+                wrist.setPosition(hpos - 0.000001);
+        }
+        if (indicator == 3) {
+            //test hand position
+            if (direction == 1 )
+                shoulder.setPosition(hpos + 0.000001);
+            else
+                shoulder.setPosition(hpos - 0.000001);
+        }
     }
 
 
