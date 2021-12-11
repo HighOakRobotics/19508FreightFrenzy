@@ -9,18 +9,18 @@ public class SwingArm {
     Servo hand, wrist, shoulder;
     double hRelease3 = 0.3; //depend on the wrist position
     double hRelease2 = 0.47;
-    double hRelease1 = 0.7;
+    double hRelease1 = 0.61;
     double hHold3 = 0.6;
-    double hHold2 = 0.4;
-    double hHold1 = 0.6;
+    double hHold2 = 0.6;
+    double hHold1 = 0.75;
     double hIntake = 0.78; //hold position 0.3 intake
     double hHome = 0.95;//home position too much
 
     double wHome= 0.69;
-    double wLift = 0.38;
-    double wLevel1 = 0.55; //lowest;
+    double wLevel1 = 0.5; //lowest;
     double wLevel2 = 0.38; //
     double wLevel3 = 0.25; //highest
+    double wLift = wLevel2;
     double wTeam = 0; //team element up 0 pposition
 
     double sMiddle = 0.6; // middle   - more;
@@ -115,7 +115,7 @@ public class SwingArm {
     public boolean isBusy() {return busy;}
 
     public void home(){
-        if (Math.abs(getWristPos() - wLift) > 0.01) return;
+        if (astate != ArmState.HOME && astate != ArmState.INTAKE && Math.abs(getWristPos() - wLift) > 0.01) return;
         if (busy) return;
 
         update(hHome, wHome, sMiddle);
@@ -138,6 +138,7 @@ public class SwingArm {
     public void lift(int level) {
         if (level == -1) { // lift for swing
             update(hHome, wLift, sMiddle);
+            //if (getWristPos() < 0.4) update(hHome - 0.15, wLift, sMiddle);
         }
         else if (level == 1) {
             wstate = WristState.LEVEL1;
