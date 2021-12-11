@@ -11,13 +11,14 @@ public class SwingArm {
     double hRelease2 = 0.47;
     double hRelease1 = 0.7;
     double hHold3 = 0.6;
-    double hHold2 = 0.8;
+    double hHold2 = 0.4;
+    double hHold1 = 0.6;
     double hIntake = 0.78; //hold position 0.3 intake
     double hHome = 0.95;//home position too much
 
     double wHome= 0.69;
     double wLift = 0.38;
-    double wLevel1 = 0.5; //lowest;
+    double wLevel1 = 0.55; //lowest;
     double wLevel2 = 0.38; //
     double wLevel3 = 0.25; //highest
     double wTeam = 0; //team element up 0 pposition
@@ -114,11 +115,7 @@ public class SwingArm {
     public boolean isBusy() {return busy;}
 
     public void home(){
-        if (astate != ArmState.HOME && astate != ArmState.INTAKE) {
-            update(hHome, wLift, sMiddle);
-            astate = ArmState.HOME;
-            return;
-        }
+        if (Math.abs(getWristPos() - wLift) > 0.01) return;
         if (busy) return;
 
         update(hHome, wHome, sMiddle);
@@ -144,7 +141,7 @@ public class SwingArm {
         }
         else if (level == 1) {
             wstate = WristState.LEVEL1;
-            update(hHome, wLevel1, shoulder.getPosition());
+            update(hHold1, wLevel1, shoulder.getPosition());
         }
         else if (level == 2) {
             wstate = WristState.LEVEL2;
@@ -166,13 +163,13 @@ public class SwingArm {
     public void left() {
         while  (wrist.getPosition() > wLift) lift(-1); //make sure lift before swing
         update (hand.getPosition(), wrist.getPosition(), sLeft);
-        sstate = sstate = ShoulderState.LEFT;
+        sstate = ShoulderState.LEFT;
     }
 
     public void right() {
         while  (wrist.getPosition() > wLift) lift(-1);
         update (hand.getPosition(), wrist.getPosition(), sRight);
-        sstate = sstate = ShoulderState.RIGHT;
+        sstate = ShoulderState.RIGHT;
     }
 
     public void deliver3 () {
@@ -199,7 +196,7 @@ public class SwingArm {
     
     public void retrieve(){
         hand.setPosition(hHome);
-        if (wstate == WristState.LEVEL1) wrist.setPosition(wLevel2);
+        //if (wstate == WristState.LEVEL1) wrist.setPosition(wLevel2);
     }
 
     public void test(int indicator, int direction) {
