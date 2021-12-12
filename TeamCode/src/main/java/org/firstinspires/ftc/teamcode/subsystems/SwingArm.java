@@ -174,7 +174,7 @@ public class SwingArm {
         sstate = ShoulderState.LEFT;
     }
 
-    public void right() {
+    public void right() {//change because of cable 12/12
         while  (wrist.getPosition() > wLift) lift(-1);
         update (hand.getPosition(), wrist.getPosition(), sRight);
         sstate = ShoulderState.RIGHT;

@@ -90,7 +90,7 @@ public class SwingArmOpMode extends OpMode {
 
         telemetry.addData("hand ", "%f2.1", arm.getHandPos());
         telemetry.addData("write ", "%f2.1", arm.getWristPos());
-        telemetry.addData("shoudler ", "%f2.1", arm.getShoulderPos());
+        telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
         telemetry.update();
     }
 
