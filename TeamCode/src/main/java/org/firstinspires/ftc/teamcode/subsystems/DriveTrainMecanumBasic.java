@@ -23,10 +23,10 @@ public class DriveTrainMecanumBasic {
     private ElapsedTime runtime;
 
     public DriveTrainMecanumBasic(HardwareMap hardwareMap, Telemetry telemetry) {
-        frontLeft = hardwareMap.get(DcMotorEx.class, "frontleft");
-        backLeft = hardwareMap.get(DcMotorEx.class, "backleft");
-        backRight = hardwareMap.get(DcMotorEx.class, "backright");
-        frontRight = hardwareMap.get(DcMotorEx.class, "frontright");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
+        backRight = hardwareMap.get(DcMotorEx.class, "backRight");
+        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
