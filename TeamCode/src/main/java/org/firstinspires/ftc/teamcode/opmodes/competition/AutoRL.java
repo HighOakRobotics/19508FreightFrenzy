@@ -1,23 +1,42 @@
-package org.firstinspires.ftc.teamcode.opmodes.testing;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+package org.firstinspires.ftc.teamcode.opmodes.competition;
+import org.firstinspires.ftc.teamcode.subsystems.Carousel;
+import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 
-@Autonomous(name = "To duck", group = "Quackology")
+@TeleOp(name = "AutoRL", group = "Quackology")
 //@Disabled
-public class AutoDriveToDuck extends LinearOpMode {
-    private DriveTrainMecanumBasic drive;
-    private org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV eye;
+
+public class AutoRL extends LinearOpMode {
+    private EyeOpenCV eye;
     private int pos;
+    private DriveTrainMecanumBasic drive;
+    private SwingArm arm;
+    private Carousel carousel;
+    private ElapsedTime runtime = new ElapsedTime();
+
+
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initializing...");
+        telemetry.update();
         drive = new DriveTrainMecanumBasic(hardwareMap, telemetry);
-        drive.autoInit();
+        carousel = new Carousel(hardwareMap);
+        carousel.init();
+        arm = new SwingArm(hardwareMap);
+        arm.init();
 
         eye = new org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV(0, 140, 280, 320, 240);
         eye.init(hardwareMap, telemetry);
@@ -37,12 +56,12 @@ public class AutoDriveToDuck extends LinearOpMode {
                 pos = -9999;
                 telemetry.addData("none ", "%d", pos);
             }
-
-            eye.init_loop();
-            telemetry.update();
         }
-        // waitForStart();
-        if (isStopRequested()) return;
+
+        runtime.reset();
+        drive.strafeByInch(10, .3); //left
+        arm.lift(-1);
+        sleep(1000);
 
         drive.forwardByInch(12, .3);
         drive.sleep(3);
@@ -55,12 +74,5 @@ public class AutoDriveToDuck extends LinearOpMode {
         else {
 
         }
-
-        drive.stop();
-        telemetry.addData("final pos ", "%d", pos);
-        telemetry.update();
-        sleep(5000);
-        //stop();
     }
-
 }
