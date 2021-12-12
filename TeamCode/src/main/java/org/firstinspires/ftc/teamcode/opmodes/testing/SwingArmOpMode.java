@@ -22,6 +22,7 @@ public class SwingArmOpMode extends OpMode {
     private DriveTrainMecanumBasic drive;
     private Intake intake;
     private SwingArm arm;
+    boolean home;
     //    private final Arm arm = new Arm();
     //private final SwingArm arm = new SwingArm();
     private Carousel carousel;
@@ -45,13 +46,13 @@ public class SwingArmOpMode extends OpMode {
     public void init_loop() {
     }
 
-
     /*
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
-
+        arm.home();
+        home = true;
     }
 
     /*
@@ -70,14 +71,27 @@ public class SwingArmOpMode extends OpMode {
 
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
-        else if (gamepad2.dpad_up) arm.lift();
-        else if (gamepad2.dpad_down) arm.home();
-        else if(gamepad2.a) arm.intake();
-        else if(gamepad2.b) arm.hold();
-        else if(gamepad2.y) arm.level3(false);
-        else if(gamepad2.right_bumper) arm.release();
-        else if(gamepad2.left_bumper) arm.retrieve();
+        else if (gamepad2.dpad_up) arm.lift(-1);
+        else if (gamepad2.dpad_down )arm.home();
+        else if(gamepad2.a) arm.intake(); //deliver1(false);
+        else if(gamepad2.x ) arm.deliver1();
+        else if (gamepad2.b) arm.deliver2();
+        else if (gamepad2.y) arm.deliver3();
+        if(gamepad2.right_bumper) arm.release();
+        if(gamepad2.left_bumper) arm.retrieve();
 
+        if (gamepad2.left_stick_y < -0.02) arm.test(1, 1);
+        if (gamepad2.left_stick_y > 0.02) arm.test(1, -1);
+        if (gamepad2.right_stick_y < -0.02) arm.test(2, 1);
+        if (gamepad2.right_stick_y > 0.02) arm.test(2, -1);
+        if (gamepad2.left_stick_x < -0.02) arm.test(3, 1);
+        if (gamepad2.left_stick_x > 0.02) arm.test(3, -1);
+
+
+        telemetry.addData("hand ", "%f2.1", arm.getHandPos());
+        telemetry.addData("write ", "%f2.1", arm.getWristPos());
+        telemetry.addData("shoudler ", "%f2.1", arm.getShoulderPos());
+        telemetry.update();
     }
 
     /*
