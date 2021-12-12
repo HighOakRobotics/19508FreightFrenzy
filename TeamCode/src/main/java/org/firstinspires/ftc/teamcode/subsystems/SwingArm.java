@@ -10,7 +10,7 @@ public class SwingArm {
     double hIntake = 0.3; //hold position 0.3 intake
     double hHome = 0.65;//home position too much
     double hRelease = 0.1;
-    double wLevel2 = 0.45; // up 0 pposition
+    double wLevel2 = 0.45; // up 0 position
     double wHome= 0.7;
     double wLevel3 = 0.2;
     double sPos = 0.57; // middle   - more;
