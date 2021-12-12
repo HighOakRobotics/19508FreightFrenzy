@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
 
 @Autonomous(name = "Auto Blue Left", group = "Quackology")
-//@Disabled
+@Disabled
 public class AutoBlueLeft extends SequoiaOpMode {
 
     DuckDetector duckDetector = new DuckDetector(0, 105, 185);
