@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
+import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
 import org.firstinspires.ftc.teamcode.tasks.GamepadDriveTask;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +23,7 @@ public class SwingArmOpMode extends OpMode {
     private DriveTrainMecanumBasic drive;
     private Intake intake;
     private SwingArm arm;
+    private TeamShipping teamShipping;
     boolean home;
     //    private final Arm arm = new Arm();
     //private final SwingArm arm = new SwingArm();
@@ -37,6 +39,8 @@ public class SwingArmOpMode extends OpMode {
         carousel.init();
         arm = new SwingArm(hardwareMap);
         arm.init();
+        teamShipping = new TeamShipping(hardwareMap);
+        teamShipping.init();
     }
 
     /*
@@ -69,6 +73,10 @@ public class SwingArmOpMode extends OpMode {
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
 
+        if (gamepad1.y) teamShipping.hold();
+        if (gamepad1.right_bumper) teamShipping.pickup();
+        if (gamepad1.left_bumper) teamShipping.release();
+
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
         else if (gamepad2.dpad_up) arm.lift(-1);
@@ -80,7 +88,7 @@ public class SwingArmOpMode extends OpMode {
         if(gamepad2.right_bumper) arm.release();
         if(gamepad2.left_bumper) arm.retrieve();
 
-        if (gamepad2.left_stick_y < -0.02) arm.test(1, 1);
+        if (gamepad2.left_stick_y < -0.02) arm.test(1, gamepad2.left_stick_y );
         if (gamepad2.left_stick_y > 0.02) arm.test(1, -1);
         if (gamepad2.right_stick_y < -0.02) arm.test(2, 1);
         if (gamepad2.right_stick_y > 0.02) arm.test(2, -1);

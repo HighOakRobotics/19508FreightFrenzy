@@ -17,15 +17,15 @@ public class Intake {
     }
 
     public void in() {
-        intake.setPower(-0.6);
+        intake.setPower(1.0);
     }
 
     public void inSlow() {
-        intake.setPower(-.2);
+        intake.setPower(.5);
     }
 
     public void out() {
-        intake.setPower(0.6);
+        intake.setPower(-0.6);
     }
 
     public void stop() {

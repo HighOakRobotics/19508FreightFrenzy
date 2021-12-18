@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 import com.ftc11392.sequoia.SequoiaOpMode;
 import com.ftc11392.sequoia.task.InstantTask;
 import com.ftc11392.sequoia.task.StartEndTask;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.tasks.GamepadDriveTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @TeleOp(name = "QuackDelivery TeleOp", group = "Quackology")
+@Disabled
 public class TeleOperated extends SequoiaOpMode {
     private final Mecanum drivetrain = new Mecanum();
 //    private final Arm arm = new Arm();

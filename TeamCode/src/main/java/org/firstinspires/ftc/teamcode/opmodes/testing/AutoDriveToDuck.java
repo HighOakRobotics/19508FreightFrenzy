@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 
 @Autonomous(name = "To duck", group = "Quackology")
-//@Disabled
+@Disabled
 public class AutoDriveToDuck extends LinearOpMode {
     private DriveTrainMecanumBasic drive;
     private org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV eye;

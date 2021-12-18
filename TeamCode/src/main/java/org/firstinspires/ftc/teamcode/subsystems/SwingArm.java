@@ -7,32 +7,27 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SwingArm {
     protected HardwareMap hwMap;
     Servo hand, wrist, shoulder;
-    double hIntake = 0.3; //hold position 0.3 intake
-    double hHome = 0.65;//home position too much
-    double hRelease = 0.1;
-    double wLevel2 = 0.45; // up 0 position
-    double wHome= 0.7;
-    double wLevel3 = 0.2;
-    double sPos = 0.57; // middle   - more;
-    double hRelease3 = 0.3; //depend on the wrist position
-    double hRelease2 = 0.47;
-    double hRelease1 = 0.61;
-    double hHold3 = 0.6;
-    double hHold2 = 0.6;
-    double hHold1 = 0.75;
-    //double hIntake = 0.78; //hold position 0.3 intake
-    //double hHome = 0.95;//home position too much
+    double hIntake = 0.65; //hold position 0.3 intake
+    double hHome = 0.9;//home position too much
+    double hRelease3 = 0.0; //depend on the wrist position
+    double hRelease2 = 0.2;
+    double hRelease1 = 0.35;
+    double hHold3 = 0.4;
+    double hHold2 = 0.55;
+    double hHold1 = 0.6;
 
-    //double wHome= 0.69;
-    double wLevel1 = 0.5; //lowest;
-    //double wLevel2 = 0.38;
-    //double wLevel3 = 0.25; //highest
+    double wHome= 0.67;
+    double wIntake = 0.64;
+    double wLevel1 = 0.4; //lowest;
+    double wLevel2 = 0.3; // up 0 position
+    double wLevel3 = 0.15;
     double wLift = wLevel2;
     double wTeam = 0; //team element up 0 pposition
 
-    double sMiddle = 0.6; // middle   - more;
+    double sMiddle = 0.57; // middle   - more;
     double sLeft = 0.22;//lower
-    double sRight = 0.7; // no wire now 0.9;
+    double sRight = 0.85; // no wire now 0.9;
+
     boolean busy = false;
 
     public enum HandState {
@@ -108,6 +103,7 @@ public class SwingArm {
         if (busy) return;
 
         hand.setPosition(hPos);
+        //slowSetPostion(hand, hand.getPosition(), hPos);
         wrist.setPosition(wPos);
         shoulder.setPosition(sPos);
         if ( Math.abs(hand.getPosition() - hPos ) > 0.01
@@ -135,7 +131,7 @@ public class SwingArm {
     public void intake() {
         if (astate != ArmState.HOME) return;
 
-        update(hIntake, wHome, sMiddle);
+        update(hIntake, wIntake, sMiddle);
         hstate = HandState.PICKUP;
         wstate = WristState.HOME;
         sstate = ShoulderState.MIDDLE;
@@ -207,31 +203,28 @@ public class SwingArm {
         //if (wstate == WristState.LEVEL1) wrist.setPosition(wLevel2);
     }
 
-    public void test(int indicator, int direction) {
+    public void test(int indicator, double amount) {
         double hpos = hand.getPosition();
         double wpos = wrist.getPosition();
         double spos = shoulder.getPosition();
 
         if (indicator == 1) {
             //test hand position
-            if (direction == 1 )
-                hand.setPosition(hpos + 0.000001);
-            else
-                hand.setPosition(hpos - 0.000001);
+            hand.setPosition(hHome + amount);
         }
         if (indicator == 2) {
-            //test hand position
-            if (direction == 1 )
-                wrist.setPosition(hpos + 0.000001);
-            else
-                wrist.setPosition(hpos - 0.000001);
+            //test wrist position
+            wrist.setPosition(wHome + amount);
         }
         if (indicator == 3) {
-            //test hand position
-            if (direction == 1 )
-                shoulder.setPosition(hpos + 0.000001);
-            else
-                shoulder.setPosition(hpos - 0.000001);
+            //test shoulder position
+            shoulder.setPosition(sMiddle + amount);
+        }
+    }
+
+    public void slowSetPostion(Servo s, double begin, double end )  {
+        while (Math.abs(s.getPosition() - end) > 0.00001 ) {
+            s.setPosition(begin + (end - begin) / 1000);
         }
     }
 
