@@ -73,10 +73,6 @@ public class SwingArmOpMode extends OpMode {
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
 
-        if (gamepad1.y) teamShipping.hold();
-        if (gamepad1.right_bumper) teamShipping.pickup();
-        if (gamepad1.left_bumper) teamShipping.release();
-
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
         else if (gamepad2.dpad_up) arm.lift(-1);
@@ -88,12 +84,25 @@ public class SwingArmOpMode extends OpMode {
         if(gamepad2.right_bumper) arm.release();
         if(gamepad2.left_bumper) arm.retrieve();
 
+        //if (gamepad2.right_stick_button) teamShipping.wrist(gamepad2.left_trigger);
+        /*if (gamepad2.right_stick_y < -0.5) teamShipping.up();
+        if (gamepad2.left_stick_button && gamepad2.right_stick_y < -0.2) teamShipping.pickup();
+        if (gamepad2.right_stick_y > 0.3) teamShipping.down();
+        if (gamepad2.right_stick_button && gamepad2.left_stick_y > 0.1 ) teamShipping.wrist(gamepad2.left_stick_y);
+        if (gamepad2.right_stick_button && gamepad2.left_stick_y < -0.1 ) teamShipping.wrist(gamepad2.left_stick_y);
+*/
+        //teamShipping.wrist(-gamepad2.left_stick_y);
+        //teamShipping.shoulder(-gamepad2.right_stick_y);
+        teamShipping.comb(-gamepad2.right_stick_y);
+        /*
         if (gamepad2.left_stick_y < -0.02) arm.test(1, gamepad2.left_stick_y );
         if (gamepad2.left_stick_y > 0.02) arm.test(1, -1);
         if (gamepad2.right_stick_y < -0.02) arm.test(2, 1);
         if (gamepad2.right_stick_y > 0.02) arm.test(2, -1);
         if (gamepad2.left_stick_x < -0.02) arm.test(3, 1);
         if (gamepad2.left_stick_x > 0.02) arm.test(3, -1);
+        */
+
 
 
         telemetry.addData("hand ", "%f2.1", arm.getHandPos());
