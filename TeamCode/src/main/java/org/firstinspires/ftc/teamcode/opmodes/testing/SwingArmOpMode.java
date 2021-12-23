@@ -1,21 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
-import com.ftc11392.sequoia.SequoiaOpMode;
-import com.ftc11392.sequoia.task.StartEndTask;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
-
 
 import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
-import org.firstinspires.ftc.teamcode.tasks.GamepadDriveTask;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 @TeleOp(name = "swing arm", group = "Quackology")
 public class SwingArmOpMode extends OpMode {

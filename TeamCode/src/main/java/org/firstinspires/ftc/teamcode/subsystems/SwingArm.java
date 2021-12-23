@@ -15,12 +15,15 @@ public class SwingArm {
     double hHold3 = 0.4;
     double hHold2 = 0.55;
     double hHold1 = 0.6;
+    double hAHold = 0.5;
+
 
     double wHome= 0.67;
     double wIntake = 0.65;
     double wLevel1 = 0.4; //lowest;
     double wLevel2 = 0.3; // up 0 position
     double wLevel3 = 0.15;
+    double wALevel1 = 0.38;
     double wLift = wLevel2;
     double wTeam = 0; //team element up 0 pposition
 
@@ -161,6 +164,10 @@ public class SwingArm {
         else if (level == 0) {
             update(hand.getPosition(), wHome, shoulder.getPosition());
         }
+        else if(level == 11){
+            wstate = WristState.LEVEL1;
+            update(hAHold, wALevel1, shoulder.getPosition());
+        }
 
     }
 
@@ -189,6 +196,11 @@ public class SwingArm {
 
     public void deliver2() {
         lift(2);
+        astate = ArmState.DELIVER;
+    }
+
+    public void autoDeliver1() {
+        lift(11);
         astate = ArmState.DELIVER;
     }
 

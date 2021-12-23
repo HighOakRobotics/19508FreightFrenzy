@@ -16,16 +16,18 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 
-@Autonomous(name = "AutoBR", group = "Quackology")
-@Disabled
+@Autonomous(name = "BlueRight", group = "Quackology")
+//@Disabled
 
 public class AutoBR extends LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();
-    private SwingArm arm;
-    private DriveTrainMecanumBasic drive;
     private EyeOpenCV eye;
     private int pos;
+    private DriveTrainMecanumBasic drive;
+    private SwingArm arm;
     private Carousel carousel;
+    private ElapsedTime runtime = new ElapsedTime();
+
+
 
     @Override
     public void runOpMode() {
@@ -36,6 +38,7 @@ public class AutoBR extends LinearOpMode {
         carousel.init();
         arm = new SwingArm(hardwareMap);
         arm.init();
+
         eye = new org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV(0, 140, 280, 320, 240);
         eye.init(hardwareMap, telemetry);
         pos = -9999;
@@ -54,25 +57,42 @@ public class AutoBR extends LinearOpMode {
                 pos = -9999;
                 telemetry.addData("none ", "%d", pos);
             }
-
-            eye.init_loop();
-            telemetry.update();
         }
 
         runtime.reset();
-        drive.strafeByInch(-10, .3); //right
-        arm.lift(-1);
+        drive.forwardByInch(-24, .5); //drive back
+
+        arm.lift(-1); //lift in the middle
         sleep(1000);
-        drive.forwardByInch(12, .3);
-        drive.sleep(3);
+        arm.left();
+
+        sleep(1000);
+
+        drive.strafeByInch(24, .4); //left
+
         if (pos == 1) {
-            drive.strafeByInch(-10, .3); //right
+            arm.deliver3(); //right
         }
         else if (pos == -1) {
-            drive.strafeByInch(10, .3); //left
+            arm.deliver1(); //left
         }
         else {
-
+            arm.deliver2(); //center
         }
+        sleep(2000);
+        arm.release(); //release arm
+
+        sleep(2000);
+
+        drive.strafeByInch(-24, .4); //right
+
+        sleep(2000);
+
+        drive.forwardByInch(36, .5);
+        arm.lift(-1); //lift in the middle
+        arm.home();
+
+        carousel.blue();
+
     }
 }
