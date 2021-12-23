@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.competition;
 import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -35,6 +36,7 @@ public class AutoRL extends LinearOpMode {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
         drive = new DriveTrainMecanumBasic(hardwareMap, telemetry);
+
         carousel = new Carousel(hardwareMap);
         carousel.init();
         arm = new SwingArm(hardwareMap);
@@ -89,11 +91,19 @@ public class AutoRL extends LinearOpMode {
 
         sleep(2000);
 
-        drive.forwardByInch(-24, .5);  //move to carousel
+        drive.forwardByInch(-40, .5);  //move to carousel
         arm.lift(-1); //lift in the middle
         arm.home();
 
-        carousel.
+
+
+
+
+
+
+
+
+
 
     }
 }
