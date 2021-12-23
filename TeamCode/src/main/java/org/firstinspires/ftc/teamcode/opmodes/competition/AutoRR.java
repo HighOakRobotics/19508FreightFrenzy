@@ -1,26 +1,20 @@
 package org.firstinspires.ftc.teamcode.opmodes.competition;
-import org.firstinspires.ftc.teamcode.subsystems.Carousel;
-import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
+
+//@Disabled
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 
-@Autonomous(name = "Right Left", group = "Quackology")
-@Disabled
-
-public class AutoRL extends LinearOpMode {
+@Autonomous(name = "Red Right", group = "Quackology")
+//@Disabled
+public class AutoRR extends LinearOpMode {
     private EyeOpenCV eye;
     private int pos;
     private DriveTrainMecanumBasic drive;
@@ -61,7 +55,7 @@ public class AutoRL extends LinearOpMode {
         }
 
         runtime.reset();
-        drive.forwardByInch(24, .5); //drive foward
+        drive.forwardByInch(-24, .5); //drive back
 
         arm.lift(-1); //lift in the middle
         sleep(1000);
@@ -89,11 +83,9 @@ public class AutoRL extends LinearOpMode {
 
         sleep(2000);
 
-        drive.forwardByInch(-24, .5);  //move to carousel
+        drive.forwardByInch(36, .5);
         arm.lift(-1); //lift in the middle
         arm.home();
-
-        carousel.
 
     }
 }

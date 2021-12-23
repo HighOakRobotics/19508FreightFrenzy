@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.competition;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,8 +16,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 
-@TeleOp(name = "AutoBR", group = "Quackology")
-//@Disabled
+@Autonomous(name = "AutoBR", group = "Quackology")
+@Disabled
 
 public class AutoBR extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();

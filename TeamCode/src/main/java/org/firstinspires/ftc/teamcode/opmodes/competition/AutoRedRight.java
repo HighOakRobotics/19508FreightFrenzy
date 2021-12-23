@@ -14,6 +14,7 @@ import com.ftc11392.sequoia.task.SwitchTask;
 import com.ftc11392.sequoia.task.Task;
 import com.ftc11392.sequoia.task.WaitTask;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
@@ -25,6 +26,8 @@ import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
 import org.firstinspires.ftc.teamcode.tasks.TimedDriveTask;
 
 @Autonomous(name = "Auto Red Right", group = "Quackology")
+@Disabled
+
 public class AutoRedRight extends SequoiaOpMode {
 
     DuckDetector duckDetector = new DuckDetector(0, 105, 185);

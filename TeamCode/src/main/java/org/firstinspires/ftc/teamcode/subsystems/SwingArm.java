@@ -7,17 +7,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SwingArm {
     protected HardwareMap hwMap;
     Servo hand, wrist, shoulder;
-    double hIntake = 0.65; //hold position 0.3 intake
+    double hIntake = 0.65; //0.6; //hold position 0.3 intake
     double hHome = 0.9;//home position too much
     double hRelease3 = 0.0; //depend on the wrist position
     double hRelease2 = 0.2;
-    double hRelease1 = 0.35;
+    double hRelease1 = 0.25;
     double hHold3 = 0.4;
     double hHold2 = 0.55;
     double hHold1 = 0.6;
 
     double wHome= 0.67;
-    double wIntake = 0.64;
+    double wIntake = 0.65;
     double wLevel1 = 0.4; //lowest;
     double wLevel2 = 0.3; // up 0 position
     double wLevel3 = 0.15;
