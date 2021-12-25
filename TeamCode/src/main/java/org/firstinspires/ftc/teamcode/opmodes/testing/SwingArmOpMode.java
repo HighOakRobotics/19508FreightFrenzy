@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.testing;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
 
 @TeleOp(name = "swing arm", group = "Quackology")
+//@Disabled
 public class SwingArmOpMode extends OpMode {
     //private final Mecanum drivetrain = new Mecanum();
     private DriveTrainMecanumBasic drive;
@@ -76,6 +78,7 @@ public class SwingArmOpMode extends OpMode {
         if(gamepad2.right_bumper) arm.release();
         if(gamepad2.left_bumper) arm.retrieve();
 
+
         //if (gamepad2.right_stick_button) teamShipping.wrist(gamepad2.left_trigger);
         /*if (gamepad2.right_stick_y < -0.5) teamShipping.up();
         if (gamepad2.left_stick_button && gamepad2.right_stick_y < -0.2) teamShipping.pickup();
@@ -83,13 +86,13 @@ public class SwingArmOpMode extends OpMode {
         if (gamepad2.right_stick_button && gamepad2.left_stick_y > 0.1 ) teamShipping.wrist(gamepad2.left_stick_y);
         if (gamepad2.right_stick_button && gamepad2.left_stick_y < -0.1 ) teamShipping.wrist(gamepad2.left_stick_y);
 */
-        //teamShipping.wrist(-gamepad2.left_stick_y);
-        //teamShipping.shoulder(-gamepad2.right_stick_y);
-        teamShipping.comb(-gamepad2.right_stick_y);
-        /*
-        if (gamepad2.left_stick_y < -0.02) arm.test(1, gamepad2.left_stick_y );
-        if (gamepad2.left_stick_y > 0.02) arm.test(1, -1);
-        if (gamepad2.right_stick_y < -0.02) arm.test(2, 1);
+        if (Math.abs(gamepad2.left_stick_y) > 0.02) {
+            arm.adjust(gamepad2.left_stick_y);
+            //arm.setCwrist(gamepad2.left_stick_y );
+        }
+        //else arm.setCwrist(0.0);
+
+        /*if (gamepad2.right_stick_y < -0.02) arm.test(2, 1);
         if (gamepad2.right_stick_y > 0.02) arm.test(2, -1);
         if (gamepad2.left_stick_x < -0.02) arm.test(3, 1);
         if (gamepad2.left_stick_x > 0.02) arm.test(3, -1);

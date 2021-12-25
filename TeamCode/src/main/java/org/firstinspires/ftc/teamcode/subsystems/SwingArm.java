@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class SwingArm {
     protected HardwareMap hwMap;
-    Servo hand, wrist, shoulder;
-    double hIntake = 0.65; //0.6; //hold position 0.3 intake
+    Servo hand,  wrist, shoulder;
+    CRServo cwrist;
+    double hIntake = 0.68; //0.6; //hold position 0.3 intake
     double hHome = 0.9;//home position too much
     double hRelease3 = 0.0; //depend on the wrist position
     double hRelease2 = 0.2;
@@ -18,8 +20,8 @@ public class SwingArm {
     double hAHold = 0.5;
 
 
-    double wHome= 0.67;
-    double wIntake = 0.65;
+    double wHome= 0.73;
+    double wIntake = 0.71; // 0.65;
     double wLevel1 = 0.4; //lowest;
     double wLevel2 = 0.3; // up 0 position
     double wLevel3 = 0.15;
@@ -67,40 +69,15 @@ public class SwingArm {
     public void init() {
         hand = hwMap.get(Servo.class, "hand");
         wrist = hwMap.get(Servo.class, "wrist");
+        cwrist = hwMap.get(CRServo.class, "cwrist");
         shoulder = hwMap.get(Servo.class, "shoulder");
         astate = ArmState.HOME;
     }
 
     public double getHandPos() {return hand.getPosition(); }
     public double getWristPos() {return wrist.getPosition();}
+    public double getCWristPos() {return cwrist.getPower();}
     public double getShoulderPos() {return shoulder.getPosition(); }
-
-    public void autoDeliver(int level, boolean left) {
-        hand.setPosition(0.5);
-        double wPos = 0.5;
-        double sPos = 0.5;
-        if (level == 1) {
-            wPos = 0.7;
-        }
-        else if (level == 2) {
-            wPos = 0.5;
-        }
-        else if (level == 3) {
-            wPos = 0.3;
-        }
-        wrist.setPosition(wPos);
-        if (left) {
-            sPos = 0.2;
-        }
-        else sPos = 0.8;
-
-        while (wrist.getPosition() > wPos) {}
-        if  (wrist.getPosition() > wPos) {}
-        else shoulder.setPosition(sPos);
-        while (Math.abs(shoulder.getPosition() - sPos) > 0.01) {}
-        hand.setPosition(0.1);
-
-    }
 
     public void update(double hPos, double wPos, double sPos) {
         if (busy) return;
@@ -120,6 +97,11 @@ public class SwingArm {
 
     public boolean isBusy() {return busy;}
 
+    public void setCwrist(double power) {
+        cwrist.setPower(power);
+    }
+
+
     public void home(){
         if (astate != ArmState.HOME && astate != ArmState.INTAKE && Math.abs(getWristPos() - wLift) > 0.01) return;
         if (busy) return;
@@ -133,14 +115,20 @@ public class SwingArm {
 
     public void intake() {
         if (astate != ArmState.HOME) return;
-
-        update(hIntake, wIntake, sMiddle);
+        update(hIntake, wHome, sMiddle);
         hstate = HandState.PICKUP;
         wstate = WristState.HOME;
         sstate = ShoulderState.MIDDLE;
         astate = ArmState.INTAKE;
     }
 
+    public void adjust(double amount) {
+        if (astate == ArmState.INTAKE) {
+            if (amount < -0.01) update(hIntake-0.01, wIntake, sMiddle);
+            else update(hIntake+0.05, wIntake, sMiddle);
+        }
+
+    }
     public void lift(int level) {
         if (level == -1) { // lift for swing
             update(hHome, wLift, sMiddle);

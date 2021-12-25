@@ -94,19 +94,5 @@ public class AutoRL extends LinearOpMode {
         drive.forwardByInch(-40, .5);  //move to carousel
         arm.lift(-1); //lift in the middle
         arm.home();
-
-
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-=======
->>>>>>> f0aaca1a42a73e5a8a74001bed2f1907734f7954
-
     }
 }
