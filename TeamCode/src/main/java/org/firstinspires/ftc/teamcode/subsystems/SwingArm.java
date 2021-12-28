@@ -16,19 +16,19 @@ public class SwingArm {
     double hIntake = 0.68; //0.6; //hold position 0.3 intake
     double hHome = 0.9;//home position too much
     double hRelease3 = 0.0; //depend on the wrist position
-    double hRelease2 = 0.2;
+    double hRelease2 = 0.1;
     double hRelease1 = 0.25;
     double hHold3 = 0.4;
-    double hHold2 = 0.55;
+    double hHold2 = 0.35;
     double hHold1 = 0.6;
     double hAHold = 0.5;
 
 
     double wHome= 0.73;
     double wIntake = 0.71; // 0.65;
-    double wLevel1 = 0.4; //lowest;
-    double wLevel2 = 0.3; // up 0 position
-    double wLevel3 = 0.15;
+    double wLevel1 = 0.5; //lowest;
+    double wLevel2 = 0.32; // up 0 position
+    double wLevel3 = 0.25;
     double wALevel1 = 0.38;
     double wLift = wLevel2;
     double wTeam = 0; //team element up 0 pposition
@@ -79,6 +79,7 @@ public class SwingArm {
         astate = ArmState.HOME;
         timer = new ElapsedTime();
         firstCall = true;
+        home();
     }
 
     public double getHandPos() {return hand.getPosition(); }

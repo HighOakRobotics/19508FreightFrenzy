@@ -58,34 +58,41 @@ public class AutoRR extends LinearOpMode {
         drive.forwardByInch(-24, .5); //drive back
 
         arm.lift(-1); //lift in the middle
-        sleep(1000);
+        sleep(200);
         arm.left();
-
-        sleep(1000);
-
-        drive.strafeByInch(24, .4); //left
+        sleep(500);
 
         if (pos == 1) {
+            drive.strafeByInch(24, .4); //left
             arm.deliver3(); //right
+            sleep(1000);
+            drive.strafeByInch(4, .3); //left
         }
         else if (pos == -1) {
+            drive.strafeByInch(14, .4); //left
             arm.deliver1(); //left
+            sleep(1000);
+            drive.strafeByInch(3, .3); //left
         }
         else {
+            drive.strafeByInch(17, .4); //left
             arm.deliver2(); //center
+            sleep(1000);
+            drive.strafeByInch(4, .3); //left
         }
-        sleep(2000);
+        sleep(1000);
         arm.release(); //release arm
 
-        sleep(2000);
+        sleep(1000);
 
-        drive.strafeByInch(-24, .4); //right
-
-        sleep(2000);
-
-        drive.forwardByInch(36, .5);
-        arm.lift(-1); //lift in the middle
+        drive.strafeByInch(-28, .4); //right
+        sleep(1000);
+        arm.lift(-1);
+        sleep(1000);
         arm.home();
+        sleep(1000);
+
+        drive.forwardByInch(50, .6);
 
     }
 }
