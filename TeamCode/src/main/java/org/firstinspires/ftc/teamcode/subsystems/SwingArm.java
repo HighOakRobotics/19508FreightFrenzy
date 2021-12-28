@@ -4,9 +4,13 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class SwingArm {
     protected HardwareMap hwMap;
+    ElapsedTime timer;
+    double curr, target, increament;
+    boolean firstCall;
     Servo hand,  wrist, shoulder;
     CRServo cwrist;
     double hIntake = 0.68; //0.6; //hold position 0.3 intake
@@ -55,6 +59,7 @@ public class SwingArm {
     public enum ArmState {
         HOME,
         INTAKE,
+        LIFT,
         DELIVER
     }
     HandState hstate;
@@ -72,6 +77,8 @@ public class SwingArm {
         cwrist = hwMap.get(CRServo.class, "cwrist");
         shoulder = hwMap.get(Servo.class, "shoulder");
         astate = ArmState.HOME;
+        timer = new ElapsedTime();
+        firstCall = true;
     }
 
     public double getHandPos() {return hand.getPosition(); }
@@ -103,9 +110,9 @@ public class SwingArm {
 
 
     public void home(){
-        if (astate != ArmState.HOME && astate != ArmState.INTAKE && Math.abs(getWristPos() - wLift) > 0.01) return;
-        if (busy) return;
-
+        if (astate == ArmState.DELIVER ) {
+            return;
+        }
         update(hHome, wHome, sMiddle);
         hstate = HandState.HOLD;
         wstate = WristState.HOME;
@@ -132,7 +139,8 @@ public class SwingArm {
     public void lift(int level) {
         if (level == -1) { // lift for swing
             update(hHome, wLift, sMiddle);
-            //if (getWristPos() < 0.4) update(hHome - 0.15, wLift, sMiddle);
+            astate = ArmState.LIFT;
+            return;
         }
         else if (level == 1) {
             wstate = WristState.LEVEL1;
@@ -156,51 +164,47 @@ public class SwingArm {
             wstate = WristState.LEVEL1;
             update(hAHold, wALevel1, shoulder.getPosition());
         }
-
+        astate = ArmState.DELIVER;
     }
 
     public void left() {
-        while  (wrist.getPosition() > wLift) lift(-1); //make sure lift before swing
+        if (astate != ArmState.LIFT) return;
         update (hand.getPosition(), wrist.getPosition(), sLeft);
         sstate = ShoulderState.LEFT;
     }
 
     public void right() {//change because of cable 12/12
-        while  (wrist.getPosition() > wLift) lift(-1);
+        if (astate != ArmState.LIFT) return;
         update (hand.getPosition(), wrist.getPosition(), sRight);
         sstate = ShoulderState.RIGHT;
     }
 
     public void deliver3 () {
         lift(3);
-        astate = ArmState.DELIVER;
-
     }
 
     public void deliver1() {
         lift(1);
-        astate = ArmState.DELIVER;
     }
 
     public void deliver2() {
         lift(2);
-        astate = ArmState.DELIVER;
     }
 
     public void autoDeliver1() {
         lift(11);
-        astate = ArmState.DELIVER;
     }
 
     public void release() {
         if (wstate == WristState.LEVEL3) hand.setPosition(hRelease3);
-        if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
-        if (wstate == WristState.LEVEL1) hand.setPosition(hRelease1);
+        else if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
+        else if (wstate == WristState.LEVEL1) hand.setPosition(hRelease1);
     }
     
     public void retrieve(){
-        hand.setPosition(hHome);
-        //if (wstate == WristState.LEVEL1) wrist.setPosition(wLevel2);
+        if (wstate == WristState.LEVEL3) hand.setPosition(hHold3);
+        if (wstate == WristState.LEVEL2) hand.setPosition(hHold2);
+        if (wstate == WristState.LEVEL1) hand.setPosition(hHold1);
     }
 
     public void test(int indicator, double amount) {
@@ -222,9 +226,22 @@ public class SwingArm {
         }
     }
 
-    public void slowSetPostion(Servo s, double begin, double end )  {
-        while (Math.abs(s.getPosition() - end) > 0.00001 ) {
-            s.setPosition(begin + (end - begin) / 1000);
+    public void slowSetPostion(Servo s, double end, double time )  { //did not work
+        if (firstCall) {
+            firstCall = false;
+            timer.reset();
+            target = end;
+            curr = s.getPosition();
+            increament = (target - curr) / time; // time is milliseconds
+            return;
+        }
+        if (timer.milliseconds() < time) {
+            curr += increament;
+            s.setPosition(curr);
+        }
+        else {
+            s.setPosition(end);
+            firstCall = true;
         }
     }
 

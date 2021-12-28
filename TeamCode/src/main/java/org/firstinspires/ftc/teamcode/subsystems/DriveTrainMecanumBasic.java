@@ -14,12 +14,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.roadrunner.AxesSigns;
+import org.firstinspires.ftc.teamcode.subsystems.roadrunner.BNO055IMUUtil;
 
 public class DriveTrainMecanumBasic {
     private final DcMotorEx frontLeft;
     private final DcMotorEx backLeft;
     private final DcMotorEx frontRight;
     private final DcMotorEx backRight;
+
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, power = .30, correction;
@@ -41,18 +44,14 @@ public class DriveTrainMecanumBasic {
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "imu".
+        //parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
+        // upward (normal to the floor) using a command like the following:
+        BNO055IMUUtil.remapAxes(imu, AxesOrder.ZYX, AxesSigns.NPN);
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-
         imu.initialize(parameters);
 
         this.telemetry = telemetry;
@@ -162,6 +161,10 @@ public class DriveTrainMecanumBasic {
         positionReport();
     }
 
+    public double getRawExternalHeading() {
+        return imu.getAngularOrientation().firstAngle;
+    }
+
     public void resetAngle()
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -233,10 +236,16 @@ public class DriveTrainMecanumBasic {
             // On right turn we have to get off zero first.
             while (getAngle() == 0) {}
 
-            while (getAngle() > degrees) {}
+            while (getAngle() > degrees) {
+                telemetry.addData("right turn curr angle ", "%3.1f ", getAngle());
+                telemetry.update();
+            }
         }
         else    // left turn.
-            while (getAngle() < degrees) {}
+            while (getAngle() < degrees) {
+                telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
+                telemetry.update();
+            }
         // turn the motors off.
         frontLeft.setPower(0);
         backLeft.setPower(0);
