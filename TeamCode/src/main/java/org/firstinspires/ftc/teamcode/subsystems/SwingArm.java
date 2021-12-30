@@ -26,7 +26,7 @@ public class SwingArm {
 
     double wHome= 0.73;
     double wIntake = 0.71; // 0.65;
-    double wLevel1 = 0.5; //lowest;
+    double wLevel1 = 0.5; //1 lowest;
     double wLevel2 = 0.32; // up 0 position
     double wLevel3 = 0.25;
     double wALevel1 = 0.38;
@@ -88,19 +88,11 @@ public class SwingArm {
     public double getShoulderPos() {return shoulder.getPosition(); }
 
     public void update(double hPos, double wPos, double sPos) {
-        if (busy) return;
-
         hand.setPosition(hPos);
         //slowSetPostion(hand, hand.getPosition(), hPos);
         wrist.setPosition(wPos);
         shoulder.setPosition(sPos);
-        if ( Math.abs(hand.getPosition() - hPos ) > 0.01
-                || Math.abs(wrist.getPosition() - wPos ) > 0.01
-                || Math.abs(shoulder.getPosition() - sPos ) > 0.01) {
-            busy = true;
-        }
-        else
-            busy = false; //done
+
     }
 
     public boolean isBusy() {return busy;}

@@ -75,7 +75,7 @@ public class AutoRR extends LinearOpMode {
             drive.strafeByInch(3, .3); //left
         }
         else {
-            drive.strafeByInch(17, .4); //left
+            drive.strafeByInch(15, .4); //left
             arm.deliver2(); //center
             sleep(1000);
             drive.strafeByInch(4, .3); //left
