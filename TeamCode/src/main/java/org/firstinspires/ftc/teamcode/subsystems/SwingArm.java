@@ -12,10 +12,15 @@ public class SwingArm {
     double curr, target, increament;
     boolean firstCall;
     Servo hand,  wrist, shoulder;
+    DcMotorEx mWrist;
+    private static final double TICKS_PER_MOTOR_REV     = 1120; // andymark neverest 40 gear
+    private static final double WHEEL_DIAMETER_INCHES   = 1;
+    public static final double TICKS_PER_INCH = TICKS_PER_MOTOR_REV / (WHEEL_DIAMETER_INCHES * Math.PI);
+
     CRServo cwrist;
     double hIntake = 0.68; //0.6; //hold position 0.3 intake
     double hHome = 0.85;//home position too much
-    double hRelease3 = 0.0; //depend on the wrist position
+    double hRelease3 = 0.05; //depend on the wrist position
     double hRelease2 = 0.15;
     double hRelease1 = 0.2;
     double hHold3 = 0.4;
@@ -34,7 +39,7 @@ public class SwingArm {
     double wLift = wLevel2;
     double wTeam = 0; //team element up 0 pposition
 
-    double sMiddle = 0.57; // middle   - more;
+    double sMiddle = 0.54; // middle   - more;
     double sLeft = 0.22;//lower
     double sRight = 0.85; // no wire now 0.9;
 
@@ -80,9 +85,12 @@ public class SwingArm {
         wrist = hwMap.get(Servo.class, "wrist");
         cwrist = hwMap.get(CRServo.class, "cwrist");
         shoulder = hwMap.get(Servo.class, "shoulder");
+        mWrist = hwMap.get(DcMotorEx.class, "mWrist");
         astate = ArmState.HOME;
         timer = new ElapsedTime();
         firstCall = true;
+        mWrist.setPower(0);
+        update(hHome,0,sMiddle);
         stop = false;
         if (wrist.getPosition() < 0.1)  wrist.setPosition(wInit); //when turn the power on the first time
         //busy = true;
@@ -178,7 +186,7 @@ public class SwingArm {
 
     public void intake() {
         if (astate != ArmState.HOME) return;
-        update(hIntake, wHome, sMiddle);
+        update(hIntake, 0, sMiddle);
         hstate = HandState.PICKUP;
         wstate = WristState.HOME;
         sstate = ShoulderState.MIDDLE;
@@ -256,10 +264,11 @@ public class SwingArm {
     }
 
     public void center() {
-        if (astate != ArmState.LIFT) return;
-        update (hand.getPosition(), wrist.getPosition(), sMiddle);
+        if (astate != ArmState.LIFT || astate != ArmState.HOME) return;
+        update (hHome, 0, sMiddle);
         sstate = ShoulderState.LEFT;
     }
+
 
     public void left() {
         if (astate != ArmState.LIFT) return;
@@ -274,11 +283,18 @@ public class SwingArm {
     }
 
     public void deliver3 () {
-        lift(3);
+        if(astate != ArmState.LIFT) return;
+        astate = ArmState.DELIVER;
+        update(hHold3,0,shoulder.getPosition());
+        mWristL3();
+
     }
 
     public void deliver1() {
-        lift(1);
+        if(astate != ArmState.LIFT) return;
+        astate = ArmState.DELIVER;
+        update(hHold1,0,shoulder.getPosition());
+        mWristL1();
     }
 
     public void deliver2() {
@@ -442,6 +458,105 @@ public class SwingArm {
                     Math.abs(target.wristP - wristP) <= 0.02 &&
                     Math.abs(target.shoulderP - shoulderP) <= 0.02;
         }
+
+    }
+    public void goToTarget(int target, double power){
+        mWrist.setPower(power);
+
+        mWrist.setTargetPosition(target);
+
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if(mWrist.isBusy()){
+            busy = true;
+
+        }
+    }
+    public void mWristHome(){
+        if(astate != ArmState.LIFT && astate != ArmState.INTAKE) return;
+        astate = ArmState.HOME;
+        update(hHome,0, sMiddle);
+        mWrist.setPower(0.3);
+
+        mWrist.setTargetPosition(-100);
+
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+
+        if(mWrist.isBusy()){
+            busy = true;
+
+        }
+
+    }
+    public void mWristLift(){
+        astate = ArmState.LIFT;
+        update(hHome,0,sMiddle);
+        mWrist.setPower(0.2);
+
+        mWrist.setTargetPosition(-300);
+
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if(mWrist.isBusy()){
+            busy = true;
+
+        }
+
+    }
+    public void mWristL1(){
+        astate = ArmState.DELIVER;
+        wstate = WristState.LEVEL1;
+        mWrist.setPower(0.3);
+
+        mWrist.setTargetPosition(-250);
+
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if(mWrist.isBusy()){
+            busy = true;
+
+        }
+    }
+    public void mWristL3(){
+
+        astate = ArmState.DELIVER;
+        wstate = WristState.LEVEL3;
+        mWrist.setPower(0.3);
+
+        mWrist.setTargetPosition(-490);
+
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if(mWrist.isBusy()){
+            busy = true;
+
+        }
+
+    }
+    public void forwardByInch (double inches, double power)
+    {
+        int targetPos = (int)(inches * TICKS_PER_INCH);
+
+        mWrist.setPower(power);
+
+        mWrist.setTargetPosition(mWrist.getCurrentPosition() + targetPos);
+
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if(mWrist.isBusy()){
+            busy = true;
+
+        }
+        //while (mWrist.isBusy()){
+        //    mWrist.getCurrentPosition();
+        //}
+        //mWrist.setPower(0);
+        //resetMode();
+        //mwrist position dpad up -480, -844, dpad down -485,
+    }
+    public double getMWristPosition(){
+        return mWrist.getCurrentPosition();
     }
 }
 
