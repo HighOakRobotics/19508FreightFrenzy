@@ -21,11 +21,11 @@ public class Intake {
     }
 
     public void inSlow() {
-        intake.setPower(.5);
+        intake.setPower(.3);
     }
 
     public void out() {
-        intake.setPower(-0.6);
+        intake.setPower(-0.7);
     }
 
     public void stop() {

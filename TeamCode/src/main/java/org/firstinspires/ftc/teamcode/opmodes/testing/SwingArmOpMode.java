@@ -42,6 +42,11 @@ public class SwingArmOpMode extends OpMode {
      */
     @Override
     public void init_loop() {
+        arm.slowHome();
+        telemetry.addData("hand ", "%f2.1", arm.getHandPos());
+        telemetry.addData("write ", "%f2.1", arm.getWristPos());
+        telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
+        telemetry.update();
     }
 
     /*
@@ -59,46 +64,33 @@ public class SwingArmOpMode extends OpMode {
     @Override
     public void loop() {
         drive.humanControl(gamepad1);
-        if (gamepad1.dpad_right) intake.in();
+        if (gamepad1.dpad_right) intake.inSlow(); //intake.in();
         else if (gamepad1.dpad_down) intake.stop();
         else if (gamepad1.dpad_left) intake.out();
+        else if (gamepad1.dpad_up) arm.start();
 
         if(gamepad1.b) carousel.red();
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
+        else if (gamepad1.y) arm.stop();
 
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
-        else if (gamepad2.dpad_up) arm.lift(-1);
-        else if (gamepad2.dpad_down )arm.home();
-        else if(gamepad2.a) arm.intake(); //deliver1(false);
+        else if (gamepad2.dpad_up) arm.center();//arm.save(); //arm.slowSetPostion(0.6, -0.01, 50); // arm.lift(-1);
+        else if (gamepad2.dpad_down )arm.slowHome(); //arm.home();
+        else if(gamepad2.a) arm.slowHand(-0.005); //arm.intake();
         else if(gamepad2.x ) arm.deliver1();
         else if (gamepad2.b) arm.deliver2();
-        else if (gamepad2.y) arm.deliver3();
+        else if (gamepad2.y) arm.slowHand(0.005); //.deliver3();
         if(gamepad2.right_bumper) arm.release();
         if(gamepad2.left_bumper) arm.retrieve();
 
-
-        //if (gamepad2.right_stick_button) teamShipping.wrist(gamepad2.left_trigger);
-        /*if (gamepad2.right_stick_y < -0.5) teamShipping.up();
-        if (gamepad2.left_stick_button && gamepad2.right_stick_y < -0.2) teamShipping.pickup();
-        if (gamepad2.right_stick_y > 0.3) teamShipping.down();
-        if (gamepad2.right_stick_button && gamepad2.left_stick_y > 0.1 ) teamShipping.wrist(gamepad2.left_stick_y);
-        if (gamepad2.right_stick_button && gamepad2.left_stick_y < -0.1 ) teamShipping.wrist(gamepad2.left_stick_y);
-*/
         if (Math.abs(gamepad2.left_stick_y) > 0.02) {
             arm.adjust(gamepad2.left_stick_y);
             //arm.setCwrist(gamepad2.left_stick_y );
         }
-        //else arm.setCwrist(0.0);
-
-        /*if (gamepad2.right_stick_y < -0.02) arm.test(2, 1);
-        if (gamepad2.right_stick_y > 0.02) arm.test(2, -1);
-        if (gamepad2.left_stick_x < -0.02) arm.test(3, 1);
-        if (gamepad2.left_stick_x > 0.02) arm.test(3, -1);
-        */
-
-
+        if (gamepad2.right_stick_y > 0.1) arm.slowLift(0.005);
+        else if (gamepad2.right_stick_y < -0.1) arm.slowLift(-0.005);
 
         telemetry.addData("hand ", "%f2.1", arm.getHandPos());
         telemetry.addData("write ", "%f2.1", arm.getWristPos());
@@ -111,5 +103,6 @@ public class SwingArmOpMode extends OpMode {
      */
     @Override
     public void stop() {
+        arm.stop();
     }
 }
