@@ -22,10 +22,10 @@ public class SwingArm {
     double hHome = 0.85;//home position too much
     double hRelease3 = 0.05; //depend on the wrist position
     double hRelease2 = 0.15;
-    double hRelease1 = 0.2;
+    double hRelease1 = 0.4;
     double hHold3 = 0.4;
     double hHold2 = 0.35;
-    double hHold1 = 0.5;
+    double hHold1 = 0.7;
     double hAHold = 0.5;
 
     double wInit = 0.5;  //maybe the position when turn on the power
