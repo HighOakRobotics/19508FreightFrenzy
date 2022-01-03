@@ -11,7 +11,7 @@ public class SwingArm {
     ElapsedTime timer;
     double curr, target, increament;
     boolean firstCall;
-    Servo hand,  wrist, shoulder;
+    Servo hand,  shoulder;
     DcMotorEx mWrist;
     private static final double TICKS_PER_MOTOR_REV     = 1120; // andymark neverest 40 gear
     private static final double WHEEL_DIAMETER_INCHES   = 1;
@@ -28,30 +28,16 @@ public class SwingArm {
     double hHold1 = 0.7;
     double hAHold = 0.5;
 
-    double wInit = 0.5;  //maybe the position when turn on the power
-    double wHome= 0.72; // lowest
-    double wIntake = 0.68; // 0.65;
-    double wMin = 0.50; // min high to swing
-    double wLevel1 = 0.38; //1 lowest;
-    double wLevel2 = 0.31; // up 0 position
-    double wLevel3 = 0.25;
-    double wALevel1 = 0.38;
-    double wLift = wLevel2;
-    double wTeam = 0; //team element up 0 pposition
-
     double sMiddle = 0.54; // middle   - more;
     double sLeft = 0.22;//lower
     double sRight = 0.85; // no wire now 0.9;
 
     boolean busy = false;
-    boolean stop = false;
-
     double currH, currW, currS;
 
     public enum HandState {
         HOLD,
-        PICKUP,
-
+        PICKUP
     }
     public enum WristState{
         HOME,
@@ -82,227 +68,97 @@ public class SwingArm {
 
     public void init() {
         hand = hwMap.get(Servo.class, "hand");
-        wrist = hwMap.get(Servo.class, "wrist");
         cwrist = hwMap.get(CRServo.class, "cwrist");
         shoulder = hwMap.get(Servo.class, "shoulder");
         mWrist = hwMap.get(DcMotorEx.class, "mWrist");
         astate = ArmState.HOME;
+        wstate = WristState.HOME;
+        sstate = ShoulderState.MIDDLE;
         timer = new ElapsedTime();
         firstCall = true;
         mWrist.setPower(0);
-        update(hHome,0,sMiddle);
-        stop = false;
-        if (wrist.getPosition() < 0.1)  wrist.setPosition(wInit); //when turn the power on the first time
-        //busy = true;
-        //slowHome();
+        update(hHome, sMiddle);
     }
 
     public double getHandPos() {return hand.getPosition(); }
-    public double getWristPos() {return wrist.getPosition();}
-    public double getCWristPos() {return cwrist.getPower();}
     public double getShoulderPos() {return shoulder.getPosition(); }
+    public double getMWristPosition() { return mWrist.getCurrentPosition(); }
 
-    public void save() {
-        currH = getHandPos();
-        currW = getWristPos();
-        currS = getShoulderPos();
-    }
-
-    public void update(double hPos, double wPos, double sPos) {
-        if (stop) return;
+    public void update(double hPos, double sPos) {
         hand.setPosition(hPos);
-        wrist.setPosition(wPos);
         shoulder.setPosition(sPos);
     }
 
     public boolean isBusy() {return busy;}
 
-    public void setCwrist(double power) {
-        cwrist.setPower(power);
-    }
-
-    public void slowHome() {
-        if (firstCall) {
-            firstCall = false;
-            timer.reset();
-            curr = getWristPos();
-            return;
-        }
-        if (timer.milliseconds() >=  50) {
-            if (curr  <  wHome) curr += 0.005;
-            else curr -= 0.005;
-            wrist.setPosition(curr);
-            //update(getHandPos(), curr, getShoulderPos());
-            timer.reset();
-        }
-        if ( curr <= wLevel3 || curr >= wHome) {
-            wrist.setPosition(wHome);
-            //update(getHandPos(), wHome, getShoulderPos());
-            firstCall = true;
-            busy = false;
-        }
-
-        hstate = HandState.HOLD;
-        wstate = WristState.HOME;
-        sstate = ShoulderState.MIDDLE;
-        astate = ArmState.HOME;
-    }
-
-    public void slowLift(double increament) {
-        if (firstCall) {
-            firstCall = false;
-            timer.reset();
-            curr = getWristPos();
-            return;
-        }
-        if (timer.milliseconds() >=  50) {
-            curr += increament;
-            if (curr >= wHome || curr <= wLevel3) return; //reach the min and max
-            update(getHandPos(), curr, getShoulderPos());
-            timer.reset();
-            if (curr < wMin) astate = ArmState.LIFT;
-        }
-        /*
-        if (Math.abs(curr - wALevel1) <= 0.01 || curr <= 0.005 || curr >= 0.995) {
-            update(getHandPos(), wALevel1, getShoulderPos());
-            firstCall = true;
-            busy = false;
-        }
-        */
-
-
-    }
-
-    public void home(){
-        if (astate == ArmState.DELIVER ) {
-            return;
-        }
-        update(hHome, wHome, sMiddle);
-        hstate = HandState.HOLD;
-        wstate = WristState.HOME;
-        sstate = ShoulderState.MIDDLE;
-        astate = ArmState.HOME;
-    }
-
     public void intake() {
-        if (astate != ArmState.HOME) return;
-        update(hIntake, 0, sMiddle);
+        if (astate != ArmState.HOME) return; //intake can only go from home state
+        update(hIntake, sMiddle);
         hstate = HandState.PICKUP;
         wstate = WristState.HOME;
         sstate = ShoulderState.MIDDLE;
         astate = ArmState.INTAKE;
     }
 
-    public void adjust(double amount) {
-        if (astate == ArmState.INTAKE) {
-            if (amount < -0.01) update(hIntake-0.02, wIntake-0.02, sMiddle);
-            else update(hIntake+0.05, wIntake, sMiddle);
-        }
-
-    }
-
-    public void slowHand(double increment) {
-
-        if (firstCall) {
-            firstCall = false;
-            timer.reset();
-            curr = getHandPos();
-            return;
-        }
-        if (timer.milliseconds() >=  50) {
-            curr += increment;
-            update(curr, getWristPos(), getShoulderPos());
-            timer.reset();
-            if (curr <= hIntake) astate = ArmState.INTAKE;
-        }
-        /*
-        if (Math.abs(curr - wALevel1) <= 0.01 || curr <= 0.005 || curr >= 0.995) {
-            update(getHandPos(), wALevel1, getShoulderPos());
-            firstCall = true;
-            busy = false;
-        }
-        */
-
-
-    }
-
-
-    public void lift(int level) {
-        if (level == -1) { // lift for swing
-            update(hHome, wLift, sMiddle);
-            astate = ArmState.LIFT;
-            return;
-        }
-        else if (level == 1) {
-            wstate = WristState.LEVEL1;
-            update(hHold1, wLevel1, shoulder.getPosition());
-        }
-        else if (level == 2) {
-            wstate = WristState.LEVEL2;
-            update(hHold2 , wLevel2, shoulder.getPosition());
-        }
-        else if (level == 3) {
-            wstate = WristState.LEVEL3;
-            update(hHold3 , wLevel3, shoulder.getPosition());
-        }
-        else if (level == 4) {
-            update(hand.getPosition(), wTeam, shoulder.getPosition());
-        }
-        else if (level == 0) {
-            update(hand.getPosition(), wHome, shoulder.getPosition());
-        }
-        else if(level == 11){
-            wstate = WristState.LEVEL1;
-            update(hAHold, wALevel1, shoulder.getPosition());
-        }
-        else if (level == -2) {
-            update(hHome-.3, wLift, sMiddle);
-            astate = ArmState.LIFT;
-            return;
-        }
-        astate = ArmState.DELIVER;
-    }
-
-    public void center() {
-        if (astate != ArmState.LIFT || astate != ArmState.HOME) return;
-        update (hHome, 0, sMiddle);
-        sstate = ShoulderState.LEFT;
-    }
-
-
-    public void left() {
-        if (astate != ArmState.LIFT) return;
-        update (hand.getPosition(), wrist.getPosition(), sLeft);
-        sstate = ShoulderState.LEFT;
-    }
-
-    public void right() {//change because of cable 12/12
-        if (astate != ArmState.LIFT) return;
-        update (hand.getPosition(), wrist.getPosition(), sRight);
-        sstate = ShoulderState.RIGHT;
-    }
-
     public void deliver3 () {
-        if(astate != ArmState.LIFT) return;
+        if (astate != ArmState.LIFT) return; //
         astate = ArmState.DELIVER;
-        update(hHold3,0,shoulder.getPosition());
-        mWristL3();
-
+        update(hHold3, shoulder.getPosition());
+        wstate = WristState.LEVEL3;
+        moveToTarget(-490, 0.3);
     }
 
     public void deliver1() {
-        if(astate != ArmState.LIFT) return;
+        if (astate != ArmState.LIFT) return;
         astate = ArmState.DELIVER;
-        update(hHold1,0,shoulder.getPosition());
-        mWristL1();
+        update(hHold1, shoulder.getPosition());
+        wstate = WristState.LEVEL1;
+        moveToTarget(-250, 0.2);
     }
 
     public void deliver2() {
-        lift(2);
+        if (astate != ArmState.LIFT) return;
+        astate = ArmState.DELIVER;
+        update(hHold2, shoulder.getPosition());
+        wstate = WristState.LEVEL2;
+        moveToTarget(-350, 0.2);
     }
 
-    public void autoDeliver1() {
-        lift(11);
+    public void mWristHome(){
+        if(astate != ArmState.LIFT && astate != ArmState.INTAKE) return;
+        astate = ArmState.HOME;
+        center();
+        moveToTarget(-100, 0.2);
+    }
+    public void mWristLift(){
+        astate = ArmState.LIFT;
+        center();
+        moveToTarget(-300, 0.2);
+    }
+    public void moveToTarget(int target, double power) {
+        mWrist.setPower(power);
+        mWrist.setTargetPosition(target);
+        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        if (mWrist.isBusy()){ busy = true; }
+    }
+
+    public void center() {
+        if (astate != ArmState.LIFT && astate != ArmState.HOME && astate != ArmState.INTAKE) return;
+        sstate = ShoulderState.MIDDLE;
+        update(hHome, sMiddle);
+    }
+
+    public void left() {
+        if (astate != ArmState.LIFT) return;
+        update (hand.getPosition(), sLeft);
+        sstate = ShoulderState.LEFT;
+    }
+
+    public void right() {
+        if (astate != ArmState.LIFT) return;
+        update (hand.getPosition(), sRight);
+        sstate = ShoulderState.RIGHT;
     }
 
     public void release() {
@@ -310,92 +166,27 @@ public class SwingArm {
         else if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
         else if (wstate == WristState.LEVEL1) hand.setPosition(hRelease1);
     }
-    
+
     public void retrieve(){
         if (wstate == WristState.LEVEL3) hand.setPosition(hHold3);
         if (wstate == WristState.LEVEL2) hand.setPosition(hHold2);
         if (wstate == WristState.LEVEL1) hand.setPosition(hHold1);
     }
 
-    public void test(int indicator, double amount) {
-        double hpos = hand.getPosition();
-        double wpos = wrist.getPosition();
-        double spos = shoulder.getPosition();
-
-        if (indicator == 1) {
-            //test hand position
-            hand.setPosition(hHome + amount);
-        }
-        if (indicator == 2) {
-            //test wrist position
-            wrist.setPosition(wHome + amount);
-        }
-        if (indicator == 3) {
-            //test shoulder position
-            shoulder.setPosition(sMiddle + amount);
-        }
-    }
+    public void stop() {mWrist.setPower(0);}
 
     public boolean outOfRange() {
         double h = getHandPos();
-        double w = getWristPos();
         double s = getShoulderPos();
-        return (h < 0.005 || h > 0.995 || w < 0.005 || w > 0.995 || s < 0.005 || s > 0.995);
-    }
-
-    public void wMove(double change) {
-        if (outOfRange()) return;
-        if (change < 0) { //up
-            wrist.setPosition(currW * (1 + change));
-        }
-        else {
-            wrist.setPosition(currW * (1 - change));
-        }
-    }
-    public void slowSetPostion(double end, double increment, int cycle )  {
-        if (outOfRange()) return;
-        if (Math.abs(curr - end) <= Math.abs(increment)) {
-            firstCall = true;
-            busy = false;
-            return;
-        }
-        if (firstCall) {
-            firstCall = false;
-            timer.reset();
-            busy = true;
-            return;
-        }
-        if (timer.milliseconds() >= cycle) {
-            curr += increment;
-            wrist.setPosition(curr);
-            timer.reset();
-        }
-    }
-
-    public void stop() {
-        stop = true;
-        wrist.close();
-    }
-
-    public void start() {
-        stop = false;
-        firstCall = true;
-
+        return (h < 0.005 || h > 0.995 || s < 0.005 || s > 0.995);
     }
 
     public void move (Arm3D pos, double increament, int ms) {
-        if (stop) return;
-        /*if (to == 0) astate = ArmState.HOME;
-        else if (to == 1 ) {
-            if (astate != ArmState.HOME) return; // intake state can only from home state
-            astate = ArmState.INTAKE;
-        }
-        else if ((to == 2 || to == 3) && astate != ArmState.INTAKE )  return;
-*/
+        double w = 0.0;
         if (firstCall) {
             firstCall = false;
             timer.reset();
-            curr3D = new Arm3D(hand.getPosition(), wrist.getPosition(), shoulder.getPosition());
+            curr3D = new Arm3D(hand.getPosition(), w, shoulder.getPosition());
             increament3D = new Arm3D (0.01, 0.01, 0.01) ;
             if (curr3D.handP > pos.handP) increament3D.handP = -0.01;
             else if (curr3D.handP == pos.handP) increament3D.handP = 0;
@@ -407,11 +198,11 @@ public class SwingArm {
         }
         if (timer.milliseconds() >=  ms) {
             curr3D.add(increament3D);
-            update(curr3D.handP, curr3D.wristP, curr3D.shoulderP);
+            //update(curr3D.handP, curr3D.wristP, curr3D.shoulderP);
             timer.reset();
         }
         if (curr3D.reached(pos)) {
-            update(pos.handP, pos.wristP, pos.shoulderP);
+            //update(pos.handP, pos.wristP, pos.shoulderP);
             firstCall = true;
             busy = false;
         }
@@ -460,82 +251,8 @@ public class SwingArm {
         }
 
     }
-    public void goToTarget(int target, double power){
-        mWrist.setPower(power);
 
-        mWrist.setTargetPosition(target);
-
-        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        if(mWrist.isBusy()){
-            busy = true;
-
-        }
-    }
-    public void mWristHome(){
-        if(astate != ArmState.LIFT && astate != ArmState.INTAKE) return;
-        astate = ArmState.HOME;
-        update(hHome,0, sMiddle);
-        mWrist.setPower(0.3);
-
-        mWrist.setTargetPosition(-100);
-
-        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-
-        if(mWrist.isBusy()){
-            busy = true;
-
-        }
-
-    }
-    public void mWristLift(){
-        astate = ArmState.LIFT;
-        update(hHome,0,sMiddle);
-        mWrist.setPower(0.2);
-
-        mWrist.setTargetPosition(-300);
-
-        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        if(mWrist.isBusy()){
-            busy = true;
-
-        }
-
-    }
-    public void mWristL1(){
-        astate = ArmState.DELIVER;
-        wstate = WristState.LEVEL1;
-        mWrist.setPower(0.3);
-
-        mWrist.setTargetPosition(-250);
-
-        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        if(mWrist.isBusy()){
-            busy = true;
-
-        }
-    }
-    public void mWristL3(){
-
-        astate = ArmState.DELIVER;
-        wstate = WristState.LEVEL3;
-        mWrist.setPower(0.3);
-
-        mWrist.setTargetPosition(-490);
-
-        mWrist.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        if(mWrist.isBusy()){
-            busy = true;
-
-        }
-
-    }
-    public void forwardByInch (double inches, double power)
-    {
+    public void forwardByInch (double inches, double power) {
         int targetPos = (int)(inches * TICKS_PER_INCH);
 
         mWrist.setPower(power);
@@ -555,8 +272,9 @@ public class SwingArm {
         //resetMode();
         //mwrist position dpad up -480, -844, dpad down -485,
     }
-    public double getMWristPosition(){
-        return mWrist.getCurrentPosition();
+    public void setCwrist(double power) {
+        cwrist.setPower(power);
     }
+
 }
 

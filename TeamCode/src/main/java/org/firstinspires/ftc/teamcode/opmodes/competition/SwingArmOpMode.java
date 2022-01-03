@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.testing;
+package org.firstinspires.ftc.teamcode.opmodes.competition;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -18,11 +18,7 @@ public class SwingArmOpMode extends OpMode {
     private Intake intake;
     private SwingArm arm;
     private TeamShipping teamShipping;
-    boolean home;
-    //    private final Arm arm = new Arm();
-    //private final SwingArm arm = new SwingArm();
     private Carousel carousel;
-//    private final Gripper gripper = new Gripper();
 
     @Override
     public void init() {
@@ -43,9 +39,7 @@ public class SwingArmOpMode extends OpMode {
      */
     @Override
     public void init_loop() {
-        arm.slowHome();
         telemetry.addData("hand ", "%f2.1", arm.getHandPos());
-        telemetry.addData("write ", "%f2.1", arm.getWristPos());
         telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
         telemetry.addData("m wrist ", "%f2.1", arm.getMWristPosition());
         telemetry.update();
@@ -56,8 +50,7 @@ public class SwingArmOpMode extends OpMode {
      */
     @Override
     public void start() {
-        arm.home();
-        home = true;
+
     }
 
     /*
@@ -69,34 +62,23 @@ public class SwingArmOpMode extends OpMode {
         if (gamepad1.dpad_right) intake.in(); //intake.in();
         else if (gamepad1.dpad_down) intake.stop();
         else if (gamepad1.dpad_left) intake.out();
-        else if (gamepad1.dpad_up) arm.start();
 
         if(gamepad1.b) carousel.red();
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
-        else if (gamepad1.y) arm.stop();
 
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
-        else if (gamepad2.dpad_up){
-            arm.mWristLift();
-            arm.center();
-        }
-        //arm.center();//arm.save(); //arm.slowSetPostion(0.6, -0.01, 50); // arm.lift(-1);
-        else if (gamepad2.dpad_down){
-            arm.mWristHome();
-            arm.center();
-        }
-        //arm.slowHome(); //arm.home();
-        else if(gamepad2.a) arm.intake();
-        else if(gamepad2.x ) arm.deliver1();
+        else if (gamepad2.dpad_up) arm.mWristLift();
+        else if (gamepad2.dpad_down) arm.mWristHome();
+        else if (gamepad2.a) arm.intake();
+        else if (gamepad2.x ) arm.deliver1();
         else if (gamepad2.b) arm.deliver2();
-        else if (gamepad2.y) arm.deliver3();//arm.slowHand(0.005); //.deliver3();
-        if(gamepad2.right_bumper) arm.release();
-        if(gamepad2.left_bumper) arm.retrieve();
+        else if (gamepad2.y) arm.deliver3();
+        else if (gamepad2.right_bumper) arm.release();
+        else if (gamepad2.left_bumper) arm.retrieve();
 
         telemetry.addData("hand ", "%f2.1", arm.getHandPos());
-        telemetry.addData("write ", "%f2.1", arm.getWristPos());
         telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
         telemetry.addData("m wrist ", "%f2.1", arm.getMWristPosition());
         telemetry.update();

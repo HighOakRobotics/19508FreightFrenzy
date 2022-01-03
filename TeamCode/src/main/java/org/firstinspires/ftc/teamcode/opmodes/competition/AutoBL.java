@@ -62,19 +62,16 @@ public class AutoBL extends LinearOpMode {
         runtime.reset();
         drive.forwardByInch(23, .5); //drive forward
 
-        arm.lift(-1); //lift in the middle
+        arm.mWristLift(); //lift in the middle
         sleep(500);
         arm.left();
-
-
-
 
         if (pos == 1) {
             arm.deliver3(); //right
             drive.strafeByInch(24, .3); // move left
         }
         else if (pos == -1) {
-            arm.autoDeliver1(); //left
+            arm.deliver1(); //left
             sleep(500);
             drive.strafeByInch(21, .3); // move left
         }
@@ -92,8 +89,8 @@ public class AutoBL extends LinearOpMode {
         sleep(2000);
 
         drive.forwardByInch(-60, .5);//drive back
-        arm.lift(-1); //lift in the middle
-        arm.home();
+        arm.mWristLift();; //lift in the middle
+        arm.mWristHome();
 
         carousel.blue();
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.competition;
+package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 
 import java.util.HashMap;
@@ -23,9 +23,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Mecanum;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
 
-@Autonomous(name = "Auto Red Left", group = "Quackology")
+@Autonomous(name = "Auto Blue Right", group = "Quackology")
 @Disabled
-public class AutoRedLeft extends SequoiaOpMode {
+public class AutoBlueRight extends SequoiaOpMode {
 
     DuckDetector duckDetector = new DuckDetector(0, 105, 185);
     Mecanum mecanum = new Mecanum();
