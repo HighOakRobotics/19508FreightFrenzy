@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 
-@Autonomous(name = "Right Left", group = "Quackology")
+@Autonomous(name = "Red Left", group = "Quackology")
 //@Disabled
 
 public class AutoRL extends LinearOpMode {
@@ -29,13 +29,12 @@ public class AutoRL extends LinearOpMode {
     private Carousel carousel;
     private ElapsedTime runtime = new ElapsedTime();
 
-
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
         drive = new DriveTrainMecanumBasic(hardwareMap, telemetry);
+        drive.resetAngle();
 
         carousel = new Carousel(hardwareMap);
         carousel.init();
@@ -60,39 +59,93 @@ public class AutoRL extends LinearOpMode {
                 pos = -9999;
                 telemetry.addData("none ", "%d", pos);
             }
+            telemetry.update();
         }
 
         runtime.reset();
-        drive.forwardByInch(24, .5); //drive foward
+        drive.forwardByInch(19, .5); //drive foward
 
-        arm.lift(-1); //lift in the middle
-        sleep(1000);
+        arm.mWristLift(); //lift in the middle
+        sleep(800);
         arm.left();
-
-        sleep(1000);
-
-        drive.strafeByInch(24, .4); //left
+        sleep(800);
 
         if (pos == 1) {
+            drive.strafeByInch(24, .3); //left
             arm.deliver3(); //right
+            sleep(750);
+            drive.strafeByInch(5, .3); //left
+            sleep(750);
+            arm.release(); //release arm
+            sleep(750);
+            drive.strafeByInch(-29, .4); //right
         }
         else if (pos == -1) {
+            drive.strafeByInch(16, .3); //left
             arm.deliver1(); //left
+            sleep(750);
+            drive.strafeByInch(3, .3); //left
+            sleep(750);
+            arm.release(); //release arm
+            sleep(750);
+            drive.strafeByInch(-20, .4); //right
         }
         else {
+            drive.strafeByInch(16, .3); //left
             arm.deliver2(); //center
+            sleep(750);
+            drive.strafeByInch(5, .3); //left
+            sleep(750);
+            arm.release(); //release arm
+            sleep(750);
+            drive.strafeByInch(-23, .4); //right
         }
+        sleep(750);
+
+        //drive.rotate(-30, 0.3, 500); //align to the wall
+
+        arm.mWristLift();
+        sleep(250);
+        arm.mWristHome();
+
+
+        drive.forwardByInch(-39, .3); //backward
+        sleep(500);
+
+        drive.strafeByInch(7,.3);
+        sleep(250);
+
+        drive.rotate(90, 0.2, 2000);
+        sleep(500);
+
+        drive.strafeByInch(4,.3);
+        sleep(250);
+
+        drive.forwardByInch(-6,.2);
+
+        carousel.red();
         sleep(2000);
-        arm.release(); //release arm
 
-        sleep(2000);
+        drive.forwardByInch(7,.3);
+        sleep(200);
 
-        drive.strafeByInch(-24, .4); //right
+        drive.rotate2(40, 0.6, 1000);
+        sleep(500);
 
-        sleep(2000);
+        drive.forwardByInch(15,.3);
+        sleep(20000);
 
-        drive.forwardByInch(-40, .5);  //move to carousel
-        arm.lift(-1); //lift in the middle
-        arm.home();
+//        //parking to warehouse if there is time
+//        if (runtime.seconds() < 22 ) {
+//            drive.rotate(45, 0.3, 1000);
+//            //drive.forwardByInch(10, .5); //drive foward
+//            //drive.strafeByInch(-4, .4); //right
+//           //drive.forwardByInch(60, .5); //drive foward
+//        }
+//        else { //park to team station
+//            drive.strafeByInch(12, .4); //left
+//            drive.forwardByInch(-12, .5); //drive back
+//        }
+
     }
 }

@@ -12,9 +12,9 @@ public class TeamShipping {
     double wPick = 1.0;
     double wHold = 0.7;
     double wRelease = 0.2;
-    double sPick = 0.05;
-    double sHold = 0.5;
-    double sRelease = sHold;
+    double sPick = 0.78;
+    double sHold = 0.25;
+    double sRelease = 0.35;
 
     double [] sPos = {0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.25, 0.275,0.275,
                       0.3,  0.325, 0.35, 0.375, 0.4, 0.425, 0.45, 0.475, 0.5, 0.5, 0.5};
@@ -50,6 +50,10 @@ public class TeamShipping {
     public void release() {
         twrist.setPosition(wRelease);
         tshoulder.setPosition(sRelease);
+    }
+
+    public void detach(){
+        tshoulder.setPosition(sRelease + 0.15);
     }
 
     public void wrist(double amount) {

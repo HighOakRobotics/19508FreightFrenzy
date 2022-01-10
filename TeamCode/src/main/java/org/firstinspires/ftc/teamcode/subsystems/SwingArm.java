@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,7 +23,7 @@ public class SwingArm {
     double hHome = 0.85;//home position too much
     double hRelease3 = 0.05; //depend on the wrist position
     double hRelease2 = 0.15;
-    double hRelease1 = 0.4;
+    double hRelease1 = 0.35;
     double hHold3 = 0.4;
     double hHold2 = 0.35;
     double hHold1 = 0.7;
@@ -71,6 +72,7 @@ public class SwingArm {
         cwrist = hwMap.get(CRServo.class, "cwrist");
         shoulder = hwMap.get(Servo.class, "shoulder");
         mWrist = hwMap.get(DcMotorEx.class, "mWrist");
+        mWrist.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         astate = ArmState.HOME;
         wstate = WristState.HOME;
         sstate = ShoulderState.MIDDLE;
@@ -105,7 +107,7 @@ public class SwingArm {
         astate = ArmState.DELIVER;
         update(hHold3, shoulder.getPosition());
         wstate = WristState.LEVEL3;
-        moveToTarget(-490, 0.3);
+        moveToTarget(-430, 0.3);
     }
 
     public void deliver1() {
@@ -113,7 +115,7 @@ public class SwingArm {
         astate = ArmState.DELIVER;
         update(hHold1, shoulder.getPosition());
         wstate = WristState.LEVEL1;
-        moveToTarget(-250, 0.2);
+        moveToTarget(-220, 0.2);
     }
 
     public void deliver2() {
@@ -128,7 +130,10 @@ public class SwingArm {
         if(astate != ArmState.LIFT && astate != ArmState.INTAKE) return;
         astate = ArmState.HOME;
         center();
-        moveToTarget(-100, 0.2);
+        moveToTarget(0, 0.1);
+        mWrist.setPower(0);
+        //mWrist.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
     }
     public void mWristLift(){
         astate = ArmState.LIFT;

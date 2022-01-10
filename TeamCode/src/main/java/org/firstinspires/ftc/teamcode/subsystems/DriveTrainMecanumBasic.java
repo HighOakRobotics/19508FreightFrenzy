@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -26,7 +27,6 @@ public class DriveTrainMecanumBasic {
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, power = .30, correction;
-
 
     private static final double TICKS_PER_MOTOR_REV     = 537.7; //Yellow Jacket motor on rev 320 gear box
     private static final double WHEEL_DIAMETER_INCHES   = 1.8898*2;
@@ -201,19 +201,17 @@ public class DriveTrainMecanumBasic {
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      * @param degrees Degrees to turn, + is left - is right
      */
-    public void rotate(int degrees, double power){
+    public void rotate(int degrees, double power, int ms){
+        runtime.reset(); //limit the time to stop turning when time running out.
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         double  leftPower, rightPower;
-
-
-
         // restart imu movement tracking.
         resetAngle();
 
         // getAngle() returns + when rotating counter clockwise (left) and - when rotating
         // clockwise (right).
 
-        if (degrees < 0)
-        {   // turn right.
+        if (degrees < 0) {   // turn right.
             leftPower = power;
             rightPower = -power;
         }
@@ -229,33 +227,90 @@ public class DriveTrainMecanumBasic {
         frontRight.setPower(rightPower);
         backRight.setPower(rightPower);
 
+        telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
+        telemetry.update();
+
         // rotate until turn is completed.
-        if (degrees < 0)
-        {
+        if (degrees < 0) {
             // On right turn we have to get off zero first.
             while (getAngle() == 0) {}
 
-            while (getAngle() > degrees) {
+            while (getAngle() > degrees && runtime.milliseconds() < ms) {
                 telemetry.addData("right turn curr angle ", "%3.1f ", getAngle());
                 telemetry.update();
             }
         }
-        else    // left turn.
-            while (getAngle() < degrees) {
+        else {// left turn.
+            while (getAngle() <= 3) {
                 telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
                 telemetry.update();
             }
+
+            while (getAngle() < degrees && runtime.milliseconds() < ms) {
+                telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
+                telemetry.update();
+            }
+        }
         // turn the motors off.
         frontLeft.setPower(0);
         backLeft.setPower(0);
         frontRight.setPower(0);
         backRight.setPower(0);
-        sleep(1000);
-
-
+    }
+    public void rotate2(int degrees, double power, int ms){
+        runtime.reset(); //limit the time to stop turning when time running out.
+        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        double  leftPower, rightPower;
+        // restart imu movement tracking.
         resetAngle();
 
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
 
+        if (degrees < 0) {   // turn right.
+            leftPower = power;
+            rightPower = -power;
+        }
+        else if (degrees > 0)
+        {   // turn left.
+            leftPower = -power;
+            rightPower = power;
+        }
+        else return;
+        // set power to rotate.
+        frontLeft.setPower(leftPower);
+        backLeft.setPower(leftPower);
+        frontRight.setPower(rightPower);
+        backRight.setPower(0);
+
+        telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
+        telemetry.update();
+
+        // rotate until turn is completed.
+        if (degrees < 0) {
+            // On right turn we have to get off zero first.
+            while (getAngle() == 0) {}
+
+            while (getAngle() > degrees && runtime.milliseconds() < ms) {
+                telemetry.addData("right turn curr angle ", "%3.1f ", getAngle());
+                telemetry.update();
+            }
+        }
+        else {// left turn.
+            while (getAngle() <= 3) {
+                telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
+                telemetry.update();
+            }
+
+            while (getAngle() < degrees && runtime.milliseconds() < ms) {
+                telemetry.addData("left turn curr angle ", "%3.1f ", getAngle());
+                telemetry.update();
+            }
+        }
+        // turn the motors off.
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
     }
-
 }

@@ -67,6 +67,19 @@ public class SwingArmOpMode extends OpMode {
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
 
+        if(gamepad1.right_bumper){
+            teamShipping.down();
+        }
+        else if(gamepad1.left_bumper){
+            teamShipping.up();
+        }
+        else if(gamepad1.right_trigger > 0.1 && gamepad1.right_trigger < 0.6){
+            teamShipping.release();
+        }
+        else if(gamepad1.right_trigger >= 0.6){
+            teamShipping.detach();
+        }
+
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
         else if (gamepad2.dpad_up) arm.mWristLift();

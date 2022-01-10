@@ -27,8 +27,6 @@ public class AutoBR extends LinearOpMode {
     private Carousel carousel;
     private ElapsedTime runtime = new ElapsedTime();
 
-
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initializing...");
@@ -38,6 +36,7 @@ public class AutoBR extends LinearOpMode {
         carousel.init();
         arm = new SwingArm(hardwareMap);
         arm.init();
+
 
         eye = new org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV(0, 140, 280, 320, 240);
         eye.init(hardwareMap, telemetry);
@@ -57,42 +56,79 @@ public class AutoBR extends LinearOpMode {
                 pos = -9999;
                 telemetry.addData("none ", "%d", pos);
             }
+            telemetry.update();
         }
 
         runtime.reset();
         drive.forwardByInch(-24, .5); //drive back
 
-        arm.lift(-1); //lift in the middle
-        sleep(1000);
+        arm.mWristLift(); //lift in the middle
+        sleep(800);
         arm.left();
-
-        sleep(1000);
-
-        drive.strafeByInch(24, .4); //left
+        sleep(800);
 
         if (pos == 1) {
+            drive.strafeByInch(24, .3); //left
             arm.deliver3(); //right
+            sleep(800);
+            drive.strafeByInch(5, .3); //left
+            sleep(800);
+            arm.release(); //release arm
+            sleep(800);
+            drive.strafeByInch(-29, .4); //right
         }
         else if (pos == -1) {
+            drive.strafeByInch(16, .3); //left
             arm.deliver1(); //left
+            sleep(750);
+            drive.strafeByInch(3, .3); //left
+            sleep(750);
+            arm.release(); //release arm
+            sleep(750);
+            drive.strafeByInch(-20, .4); //right
         }
         else {
+            drive.strafeByInch(16, .3); //left
             arm.deliver2(); //center
+            sleep(750);
+            drive.strafeByInch(5, .3); //left
+            sleep(750);
+            arm.release(); //release arm
+            sleep(750);
+            drive.strafeByInch(-23, .4); //right
         }
-        sleep(2000);
-        arm.release(); //release arm
-
-        sleep(2000);
-
-        drive.strafeByInch(-24, .4); //right
-
-        sleep(2000);
-
-        drive.forwardByInch(36, .5);
-        arm.lift(-1); //lift in the middle
-        arm.home();
+        arm.mWristLift();
+        sleep(800);
+        arm.mWristHome();
+        drive.forwardByInch(37, .4 );
+        sleep(800);
+        drive.strafeByInch(6 , 0.3);
+        drive.rotate(180, .5, 1400 );
+        drive.forwardByInch(-6, .2);
+        sleep(800);
 
         carousel.blue();
+        sleep(2000);
+//        drive.rotate(90, .5, 500);
+        drive.strafeByInch(-9 , 0.4);
+        sleep(20000);
+
+//parking to warehouse if there is time
+//        if (runtime.seconds() < 22 ) {
+//            drive.rotate(-45, 0.3, 1000);
+//            drive.forwardByInch(10, .5); //drive foward
+//            drive.strafeByInch(-4, .4); //right
+//            drive.forwardByInch(60, .5); //drive foward
+//        }
+//        else { //park to team station
+//            drive.strafeByInch(-12, .4); //left
+//            drive.forwardByInch(12, .5); //drive back
+//        }
+        /*IMPORTANT FOR EDDY:
+        write code to turn left to make it parallel to the wall
+        then strafe right few inches (maybe 4 or 3ish)
+         */
+
 
     }
 }

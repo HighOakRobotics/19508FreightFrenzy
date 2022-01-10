@@ -27,8 +27,6 @@ public class AutoBL extends LinearOpMode {
     private Carousel carousel;
     private ElapsedTime runtime = new ElapsedTime();
 
-
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initializing...");
@@ -57,42 +55,55 @@ public class AutoBL extends LinearOpMode {
                 pos = -9999;
                 telemetry.addData("none ", "%d", pos);
             }
+            telemetry.update();
         }
 
         runtime.reset();
-        drive.forwardByInch(23, .5); //drive forward
+        drive.forwardByInch(24, .5); //drive forward
 
         arm.mWristLift(); //lift in the middle
         sleep(500);
         arm.left();
+        sleep(200);
 
         if (pos == 1) {
+            drive.strafeByInch(24, .3); //left
             arm.deliver3(); //right
-            drive.strafeByInch(24, .3); // move left
+            sleep(800);
+            drive.strafeByInch(5, .3); //left
+            sleep(800);
+            arm.release(); //release arm
+            sleep(800);
+            drive.strafeByInch(-29, .4); //right
         }
         else if (pos == -1) {
+            drive.strafeByInch(16, .3); //left
             arm.deliver1(); //left
-            sleep(500);
-            drive.strafeByInch(21, .3); // move left
+            sleep(800);
+            drive.strafeByInch(3, .3); //left
+            sleep(800);
+            arm.release(); //release arm
+            sleep(800);
+            drive.strafeByInch(-20, .4); //right
         }
         else {
+            drive.strafeByInch(16, .3); //left
             arm.deliver2(); //center
-            drive.strafeByInch(24, .3); // move left
+            sleep(800);
+            drive.strafeByInch(5, .3); //left
+            sleep(800);
+            arm.release(); //release arm
+            sleep(800);
+            drive.strafeByInch(-23, .4); //right
         }
-        sleep(2000);
-        arm.release(); //release arm
+        sleep(800);
 
-        sleep(2000);
-
-        drive.strafeByInch(-25, .4); //right
-
-        sleep(2000);
-
-        drive.forwardByInch(-60, .5);//drive back
-        arm.mWristLift();; //lift in the middle
+//        drive.rotate(-30, 0.3, 500); //tune right a little to align to the wall
+        arm.mWristLift();
+        sleep(800);
         arm.mWristHome();
+        sleep(800);
 
-        carousel.blue();
-
+        drive.forwardByInch(-60, .6); //back to park
     }
 }

@@ -18,16 +18,32 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 @Autonomous(name = "TurningTest", group = "Quackology")
-
+//@Disabled
 
 public class TurningTest extends LinearOpMode {
     private DriveTrainMecanumBasic drive;
     private ElapsedTime runtime = new ElapsedTime();
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
         drive = new DriveTrainMecanumBasic(hardwareMap, telemetry);
         drive.resetAngle();
-        drive.rotate(90, 0.5);
+
+        while (!isStarted() && !isStopRequested()) {
+            telemetry.addData("angle ", "%f5.2", drive.getRawExternalHeading());
+            telemetry.addData("global angle ", "%f5.2", drive.getAngle());
+            telemetry.update();
+        }
+
+        /*while (opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("angle ", "%f5.2", drive.getRawExternalHeading());
+            telemetry.addData("global angle ", "%f5.2", drive.getAngle());
+            telemetry.update();
+        }
+        */
+
+        drive.rotate(90, 0.3, 1500); //worked, over turned during to imu delay
+        sleep(1000);
+        drive.rotate(-90,0.3,3000);
 
 
     }
