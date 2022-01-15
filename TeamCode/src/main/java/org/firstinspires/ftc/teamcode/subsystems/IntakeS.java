@@ -11,24 +11,20 @@ public class IntakeS extends Subsystem {
     DcMotorEx intake;
     double power; //?
 
-    public double getSetpoint() {
-        return power;
-    }
-
-    public void setSetpoint(double power) {
-        this.power = power;
-    }
-
     public void in() {
-        intake.setPower(1.0);
+        power = 1.0; //intake.setPower(1.0);
     }
 
     public void inSlow() {
-        intake.setPower(.3);
+        power = 0.3; //intake.setPower(.3);
     }
 
     public void out() {
-        intake.setPower(-0.7);
+        power = -0.7; //intake.setPower(-0.7);
+    }
+
+    public void pause() {
+        power = 0.0;
     }
 
     @Override
