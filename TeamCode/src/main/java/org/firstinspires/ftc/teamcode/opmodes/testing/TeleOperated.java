@@ -43,5 +43,8 @@ public class TeleOperated extends SequoiaOpMode {
         gamepad1H.leftButton().onPress(new InstantTask(() -> {intake.out();}));
         gamepad1H.downButton().onPress(new InstantTask(() -> {intake.pause();}));
 
+        //a for pick; y for hole; b for release, right trigger for up, left trigger for down
+        
+
     }
 }

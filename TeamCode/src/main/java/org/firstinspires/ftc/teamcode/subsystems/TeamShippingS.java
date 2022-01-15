@@ -6,11 +6,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class TeamShippingS extends Subsystem {
     Servo tshoulder;
+    double sStart = 0.88; //???
     double sPick = 0.78;
     double sHold = 0.25;
     double sRelease = 0.35;
     TSState state;
     double currPos;
+    double target;
 
     public TSState getState() {
         return state;
@@ -19,12 +21,36 @@ public class TeamShippingS extends Subsystem {
         this.state = state;
     }
 
+    public void update(TSState state) {
+        this.state = state;
+        switch (state) {
+            case PICK:
+                target = sPick;
+               break;
+            case HOLD:
+                target = sHold;
+                break;
+            case RELEASE:
+                target = sRelease;
+                break;
+            case START:
+                target = sStart;
+                break;
+            case UP:
+                target -= 0.05;
+                break;
+            case DOWN:
+                target += 0.05;
+                break;
+        }
+    }
     @Override
     public void initialize(HardwareMap hardwareMap) {
         tshoulder  = hardwareMap.get(Servo.class, "tshoulder");
         state = TSState.START;
-        currPos = 0;
-        //twrist.setPosition(0); // should we pick up at the beginning?
+        currPos = sStart;
+        target = sStart;
+        tshoulder.setPosition(sStart);
     }
 
     @Override
@@ -37,24 +63,11 @@ public class TeamShippingS extends Subsystem {
 
     @Override
     public void runPeriodic() {
-        currPos = tshoulder.getPosition();
-        switch (state) {
-            case PICK:
-                tshoulder.setPosition(sPick);
-                break;
-            case HOLD:
-                tshoulder.setPosition(sHold);
-                break;
-            case RELEASE:
-                tshoulder.setPosition(sRelease);
-                break;
-            case START:
-                tshoulder.setPosition(currPos + 0.01);
-                break;
-        }
+        tshoulder.setPosition(target);
+
         telemetry.addLine("[TeamShipping]")
                 .addData("State", state)
-                .addData("Current", "%f.2", currPos);
+                .addData("Current", "%f.2", target);
     }
 
     @Override
@@ -63,6 +76,6 @@ public class TeamShippingS extends Subsystem {
     }
 
     public enum TSState {
-        START, PICK, HOLD, RELEASE;
+        START, PICK, HOLD, RELEASE, UP, DOWN;
     }
 }
