@@ -22,7 +22,9 @@ public class TeamShippingS extends Subsystem {
     }
 
     public void update(TSState state) {
-        this.state = state;
+        if(state != TeamShippingS.TSState.UP || state != TeamShippingS.TSState.DOWN)
+            this.state = state;
+
         switch (state) {
             case PICK:
                 target = sPick;

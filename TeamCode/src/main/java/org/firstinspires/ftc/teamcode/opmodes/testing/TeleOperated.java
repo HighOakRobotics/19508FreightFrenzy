@@ -18,7 +18,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Mecanum;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
+import org.firstinspires.ftc.teamcode.subsystems.TeamShippingS;
 import org.firstinspires.ftc.teamcode.tasks.GamepadDriveTask;
+import org.firstinspires.ftc.teamcode.tasks.TeamShippingCycleTask;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,7 +30,7 @@ public class TeleOperated extends SequoiaOpMode {
     private final Mecanum drivetrain = new Mecanum();
     private IntakeS intake = new IntakeS();
     private SwingArm arm;
-    private TeamShipping teamShipping;
+    private TeamShippingS teamShipping = new TeamShippingS();
     private CarouselS carousel = new CarouselS();
 
     @Override
@@ -44,7 +46,12 @@ public class TeleOperated extends SequoiaOpMode {
         gamepad1H.downButton().onPress(new InstantTask(() -> {intake.pause();}));
 
         //a for pick; y for hole; b for release, right trigger for up, left trigger for down
-        
+        gamepad1H.aButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.PICK);}));
+        gamepad1H.yButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.HOLD);}));
+        gamepad1H.bButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.RELEASE);}));
+        gamepad1H.rightBumperButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.UP);}));
+        gamepad1H.leftBumperButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.DOWN);}));
 
+        gamepad1H.xButton().onPress(new TeamShippingCycleTask(teamShipping));
     }
 }
