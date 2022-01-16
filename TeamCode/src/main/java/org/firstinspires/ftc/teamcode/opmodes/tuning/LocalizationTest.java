@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanum;
 
 @Config
 @Autonomous(group = "tuning")
+@Disabled
 public class LocalizationTest extends LinearOpMode {
 	@Override
 	public void runOpMode() throws InterruptedException {

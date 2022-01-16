@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.competition;
+package org.firstinspires.ftc.teamcode.opmodes.testing;
 
 
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import com.ftc11392.sequoia.task.SwitchTask;
 import com.ftc11392.sequoia.task.Task;
 import com.ftc11392.sequoia.task.WaitTask;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.DuckDetector;
@@ -22,21 +23,18 @@ import org.firstinspires.ftc.teamcode.subsystems.Mecanum;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
 
-@Autonomous(name = "Auto Red", group = "Working Title")
-public class AutoRed extends SequoiaOpMode {
+@Autonomous(name = "Auto Blue Left", group = "Quackology")
+@Disabled
+public class AutoBlueLeft extends SequoiaOpMode {
 
     DuckDetector duckDetector = new DuckDetector(0, 105, 185);
     Mecanum mecanum = new Mecanum();
     Rotator rotator = new Rotator();
-    Arm arm = new Arm();
-    Gripper gripper = new Gripper();
+//    Arm arm = new Arm();
+//    Gripper gripper = new Gripper();
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
         put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(
-                new InstantTask(() -> {
-                    arm.setMode(Arm.ArmMode.HORIZONTAL);
-                    arm.modifySetpoint(6);
-                }),
                 new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
                         .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
                         .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
@@ -48,10 +46,6 @@ public class AutoRed extends SequoiaOpMode {
 
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
-                new InstantTask(() -> {
-                    arm.setMode(Arm.ArmMode.HORIZONTAL);
-                    arm.modifySetpoint(10);
-                }),
                 new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
                         .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
                         .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
@@ -63,8 +57,7 @@ public class AutoRed extends SequoiaOpMode {
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
                 new InstantTask(() -> {
-                    arm.setMode(Arm.ArmMode.HORIZONTAL);
-                    arm.modifySetpoint(18); // 11 18
+
                 }),
                 new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
                         .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
@@ -87,14 +80,11 @@ public class AutoRed extends SequoiaOpMode {
         DuckDetector.DuckPipeline.DuckPosition position = duckDetector.getAnalysis();
         scheduler.schedule(new SequentialTaskBundle(
                 new SwitchTask(positionMap, () -> position),
-                new InstantTask(() -> gripper.setState(Gripper.GripperState.OPEN)),
-                new WaitTask(1),
                 new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
                         .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
                         .lineToLinearHeading(mecanum.mecanum().getPoseEstimate()
                                 .plus(new Pose2d(0,-5)))
                         .build()),
-                new InstantTask(() -> arm.setMode(Arm.ArmMode.HOME)),
                 new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
                         .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
                         .lineToLinearHeading(new Pose2d(-66.5,-59.5,-Math.PI/2))

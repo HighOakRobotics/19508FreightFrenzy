@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class Rotator extends Subsystem {
     DcMotorEx rotator;
     static final double ratio = 7.5; // Carousel is 15 in, wheel is 2 in diameter.
-
     public double getSetpoint() {
         return setpoint;
     }
