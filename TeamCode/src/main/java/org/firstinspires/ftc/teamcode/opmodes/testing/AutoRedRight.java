@@ -18,104 +18,109 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.CarouselS;
 import org.firstinspires.ftc.teamcode.subsystems.DuckDetector;
+import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 import org.firstinspires.ftc.teamcode.subsystems.Gripper;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeS;
 import org.firstinspires.ftc.teamcode.subsystems.Mecanum;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
+import org.firstinspires.ftc.teamcode.subsystems.SwingArmS;
+import org.firstinspires.ftc.teamcode.subsystems.TeamShippingS;
 import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
 import org.firstinspires.ftc.teamcode.tasks.TimedDriveTask;
 
-@Autonomous(name = "Auto Red Right", group = "Quackology")
-@Disabled
+@Autonomous(name = "S Red Right", group = "Quackology")
+//@Disabled
 
 public class AutoRedRight extends SequoiaOpMode {
-
     DuckDetector duckDetector = new DuckDetector(0, 105, 185);
-    Mecanum mecanum = new Mecanum();
-//    Rotator rotator = new Rotator();
-//    Arm arm = new Arm();
-//    Gripper gripper = new Gripper();
-    ElapsedTime runtime = new ElapsedTime();
-    //this code does not work
+    private final Mecanum drive = new Mecanum();
+    private IntakeS intake = new IntakeS();
+    private SwingArmS arm = new SwingArmS();
 
+    ElapsedTime runtime = new ElapsedTime();
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
-        put(DuckDetector.DuckPipeline.DuckPosition.LEFT,
-                new TimedDriveTask(runtime, mecanum));
+        put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(
+                new InstantTask(() -> {
+                    arm.deliver1();
+                }),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
+                        .build()),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-53,Math.PI/2))
+                        .build())
 
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
-//                        .build()),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-12,-53,Math.PI/2))
-//                        .build())
-//
-//        ));
-        put(DuckDetector.DuckPipeline.DuckPosition.CENTER,
-                        new TimedDriveTask(runtime, mecanum));
-
-
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
-//                        .build()),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-12,-51,Math.PI/2))
-//                        .build())
-
-        put(DuckDetector.DuckPipeline.DuckPosition.RIGHT,
-                        new TimedDriveTask(runtime, mecanum));
-//                    arm.setMode(Arm.ArmMode.HORIZONTAL);
-//                    arm.modifySetpoint(18); // 11 18
-//                }),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-12,-58,Math.PI/2))
-//                        .build()),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-12,-51,Math.PI/2))
-//                        .build())
-
+        ));
+        put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
+                new InstantTask(() -> {
+                    arm.deliver2();
+                }),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
+                        .build()),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-51,Math.PI/2))
+                        .build())
+        ));
+        put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
+                new InstantTask(() -> {
+                    arm.deliver3();
+                }),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-58,Math.PI/2))
+                        .build()),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-51,Math.PI/2))
+                        .build())
+        ));
     }};
+
 
     @Override
     public void initTriggers() {
-        mecanum.mecanum().setPoseEstimate(new Pose2d(-33,-63.5));
+        arm.wristHome();
+        drive.mecanum().setPoseEstimate(new Pose2d(-33,-63.5)); // ???need to reset it
     }
 
     @Override
     public void runTriggers() {
         DuckDetector.DuckPipeline.DuckPosition position = duckDetector.getAnalysis();
         scheduler.schedule(new SequentialTaskBundle(
-                new WaitTask(10),
-//                new SwitchTask(positionMap, () -> position),
-////                new InstantTask(() -> gripper.setState(Gripper.GripperState.OPEN)),
-//                new WaitTask(1),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(mecanum.mecanum().getPoseEstimate()
-//                                .plus(new Pose2d(0,-5)))
-//                        .build()),
-////                new InstantTask(() -> arm.setMode(Arm.ArmMode.HOME)),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(-66.5,-59.5,-Math.PI/2))
-//                        .build()),
-////                new InstantTask(() -> rotator.setSetpoint(-10)),
-//                new WaitTask(3),
-////                new InstantTask(() -> rotator.setSetpoint(0)),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(0,-72.5,Math.PI))
-//                        .build()),
-//                new FollowTrajectoryTask(mecanum, () -> mecanum.mecanum()
-//                        .trajectoryBuilder(mecanum.mecanum().getPoseEstimate())
-//                        .lineToLinearHeading(new Pose2d(48,-72.5,Math.PI))
-//                        .build()),
+                //new WaitTask(8, TimeUnit.SECONDS),
+                new InstantTask( () -> arm.wristLift() ),
+                new WaitTask(500, TimeUnit.MILLISECONDS),
+                new InstantTask( () -> arm.left() ),
+
+                new SwitchTask(positionMap, () -> position),
+
+                new InstantTask(() -> arm.wristLift() ),
+                new InstantTask(() -> arm.wristHome() ),
+
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-66.5,-59.5,-Math.PI/2))
+                        .build()),
+                new InstantTask(() -> intake.in() ),
+                new WaitTask(2),
+                new InstantTask(() -> intake.pause()),
+
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(0,-72.5, Math.PI))
+                        .build()),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(48,-72.5, Math.PI))
+                        .build()),
                 new InstantTask(this::requestOpModeStop)
         ));
     }

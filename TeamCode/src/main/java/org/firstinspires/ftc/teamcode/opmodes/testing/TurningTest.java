@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 @Autonomous(name = "TurningTest", group = "Quackology")
-//@Disabled
+@Disabled
 
 public class TurningTest extends LinearOpMode {
     private DriveTrainMecanumBasic drive;

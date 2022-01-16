@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeS;
 import org.firstinspires.ftc.teamcode.subsystems.Mecanum;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
-import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
+import org.firstinspires.ftc.teamcode.subsystems.SwingArmS;
 import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
 import org.firstinspires.ftc.teamcode.subsystems.TeamShippingS;
 import org.firstinspires.ftc.teamcode.tasks.GamepadDriveTask;
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TeleOperated extends SequoiaOpMode {
     private final Mecanum drivetrain = new Mecanum();
     private IntakeS intake = new IntakeS();
-    private SwingArm arm;
+    private SwingArmS arm = new SwingArmS();
     private TeamShippingS teamShipping = new TeamShippingS();
     private CarouselS carousel = new CarouselS();
 
@@ -41,17 +41,27 @@ public class TeleOperated extends SequoiaOpMode {
     public void runTriggers() {
         gamepad1H.sticksButton(0.01).onPressWithCancel(new GamepadDriveTask(gamepad1, drivetrain));
 
+        gamepad1H.aButton().onPress(new InstantTask( () -> {carousel.pause();}));
+        gamepad1H.bButton().onPress(new InstantTask( () -> carousel.red()));
+        gamepad1H.xButton().onPress(new InstantTask( () -> carousel.blue()));
+
         gamepad1H.rightButton().onPress(new InstantTask(() -> {intake.in();}));
         gamepad1H.leftButton().onPress(new InstantTask(() -> {intake.out();}));
         gamepad1H.downButton().onPress(new InstantTask(() -> {intake.pause();}));
 
-        //a for pick; y for hole; b for release, right trigger for up, left trigger for down
-        gamepad1H.aButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.PICK);}));
-        gamepad1H.yButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.HOLD);}));
-        gamepad1H.bButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.RELEASE);}));
         gamepad1H.rightBumperButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.UP);}));
         gamepad1H.leftBumperButton().onPress(new InstantTask(() -> {teamShipping.setState(TeamShippingS.TSState.DOWN);}));
+        gamepad1H.yButton().onPress(new TeamShippingCycleTask(teamShipping));
 
-        gamepad1H.xButton().onPress(new TeamShippingCycleTask(teamShipping));
+        gamepad2H.downButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.HOME);}));
+        gamepad2H.upButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.LIFT);}));
+        gamepad2H.rightButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RIGHT);}));
+        gamepad2H.leftButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.LEFT);}));
+        gamepad2H.aButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.INTAKE);}));
+        gamepad2H.bButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER1);}));
+        gamepad2H.xButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER2);}));
+        gamepad2H.yButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER3);}));
+        gamepad2H.rightBumperButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RELEASE);}));
+        gamepad2H.leftBumperButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RETRIVE);}));
     }
 }

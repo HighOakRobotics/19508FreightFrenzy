@@ -11,30 +11,28 @@ public class CarouselS extends Subsystem {
     DcMotorEx carousel;
     static final double ratio = 5; // Carousel is 15 in, wheel is 3 in diameter.
     double setpoint; //?
+    double power;
 
     public double getSetpoint() {
         return setpoint;
     }
-
     public void setSetpoint(double setpoint) {
         this.setpoint = setpoint;
     }
 
-    public void blue() { carousel.setPower(0.7); }
-
-    public void inSlow() {
-        carousel.setPower(-.2);
-    }
-
-    public void red() { carousel.setPower(-0.7); }//speed
+    public void blue() { power = 0.7; }
+    public void inSlow() { power = -.2; }
+    public void red() { power = -0.7; }
+    public void pause() { power = 0.0; }
 
     @Override
     public void initialize(HardwareMap hardwareMap) {
         carousel = hardwareMap.get(DcMotorEx.class, "carousel");
-        carousel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        carousel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        carousel.setVelocity(0, AngleUnit.DEGREES);
-
+        carousel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //carousel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //carousel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //carousel.setVelocity(0, AngleUnit.DEGREES);
+        power = 0;
         setpoint = 0;
     }
 
@@ -50,11 +48,13 @@ public class CarouselS extends Subsystem {
 
     @Override
     public void runPeriodic() {
-        carousel.setVelocity( ratio * setpoint, AngleUnit.DEGREES);
+        carousel.setPower(power);
+        //carousel.setVelocity( ratio * setpoint, AngleUnit.DEGREES);
     }
 
     @Override
     public void stop() {
-        carousel.setVelocity(0);
+        carousel.setPower(0.0);
+        //carousel.setVelocity(0);
     }
 }

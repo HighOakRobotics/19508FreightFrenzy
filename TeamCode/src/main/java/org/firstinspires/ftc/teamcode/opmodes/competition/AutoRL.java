@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 
 @Autonomous(name = "Red Left", group = "Quackology")
-//@Disabled
+@Disabled
 
 public class AutoRL extends LinearOpMode {
     private EyeOpenCV eye;

@@ -18,7 +18,7 @@ public class SwingArm {
     private static final double WHEEL_DIAMETER_INCHES   = 1;
     public static final double TICKS_PER_INCH = TICKS_PER_MOTOR_REV / (WHEEL_DIAMETER_INCHES * Math.PI);
 
-    CRServo cwrist;
+    //CRServo cwrist;
     double hIntake = 0.68; //0.6; //hold position 0.3 intake
     double hHome = 0.85;//home position too much
     double hRelease3 = 0.05; //depend on the wrist position
@@ -69,7 +69,7 @@ public class SwingArm {
 
     public void init() {
         hand = hwMap.get(Servo.class, "hand");
-        cwrist = hwMap.get(CRServo.class, "cwrist");
+        //cwrist = hwMap.get(CRServo.class, "cwrist");
         shoulder = hwMap.get(Servo.class, "shoulder");
         mWrist = hwMap.get(DcMotorEx.class, "mWrist");
         mWrist.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -277,9 +277,7 @@ public class SwingArm {
         //resetMode();
         //mwrist position dpad up -480, -844, dpad down -485,
     }
-    public void setCwrist(double power) {
-        cwrist.setPower(power);
-    }
+    //public void setCwrist(double power) { cwrist.setPower(power); }
 
 }
 

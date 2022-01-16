@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 
 @Autonomous(name = "Red Right", group = "Quackology")
-//@Disabled
+@Disabled
 public class AutoRR extends LinearOpMode {
     private EyeOpenCV eye;
     private int pos;
