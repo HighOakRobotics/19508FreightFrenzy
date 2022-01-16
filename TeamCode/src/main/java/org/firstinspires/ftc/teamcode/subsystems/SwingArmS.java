@@ -63,6 +63,7 @@ public class SwingArmS extends Subsystem {
     public void moveToTarget(int target, double power) {
         wrist.setPower(power);
         wrist.setTargetPosition(target);
+        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if (wrist.isBusy()) busy = true;
         else busy = false;
     }
@@ -152,7 +153,7 @@ public class SwingArmS extends Subsystem {
 
         wrist = hardwareMap.get(DcMotorEx.class, "mWrist");
         wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         wristHome();
 
         setpoint = 0;
