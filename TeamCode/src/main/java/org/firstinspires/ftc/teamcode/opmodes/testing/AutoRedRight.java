@@ -48,13 +48,8 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
-                        .build()),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-53,Math.PI/2))
+                        .lineToLinearHeading(new Pose2d(-12,-48,0))
                         .build())
-
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -62,11 +57,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-60,Math.PI/2))
-                        .build()),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-51,Math.PI/2))
+                        .lineToLinearHeading(new Pose2d(-12,-46,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
@@ -75,11 +66,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-58,Math.PI/2))
-                        .build()),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-51,Math.PI/2))
+                        .lineToLinearHeading(new Pose2d(-12,-44,0))
                         .build())
         ));
     }};
@@ -88,7 +75,7 @@ public class AutoRedRight extends SequoiaOpMode {
     @Override
     public void initTriggers() {
         arm.wristHome();
-        drive.mecanum().setPoseEstimate(new Pose2d(-33,-63.5)); // ???need to reset it
+        drive.mecanum().setPoseEstimate(new Pose2d(12,-63.5)); // ???need to reset it
     }
 
     @Override
@@ -101,25 +88,67 @@ public class AutoRedRight extends SequoiaOpMode {
                 new InstantTask( () -> arm.left() ),
 
                 new SwitchTask(positionMap, () -> position),
-
+                new InstantTask(() -> arm.release() ),
+                new WaitTask(2, TimeUnit.SECONDS),
+                new InstantTask(() -> arm.retrieve() ),
                 new InstantTask(() -> arm.wristLift() ),
+                new WaitTask(1),
                 new InstantTask(() -> arm.wristHome() ),
 
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-66.5,-59.5,-Math.PI/2))
+                        .lineToLinearHeading(new Pose2d(12,-63.5,0))
                         .build()),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(36,-63.5,0))
+                        .build()),
+                new InstantTask(() -> arm.intake() ),
+                new WaitTask(1),
                 new InstantTask(() -> intake.in() ),
                 new WaitTask(2),
+                new InstantTask(() -> arm.wristHome() ),
                 new InstantTask(() -> intake.pause()),
 
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(0,-72.5, Math.PI))
+                        .lineToLinearHeading(new Pose2d(12,-63.5, 0))
+                        .build()),
+                new InstantTask(() -> arm.wristLift() ),
+                new WaitTask(1),
+                new InstantTask(() -> arm.left() ),
+                new InstantTask(() -> arm.deliver3() ),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-44, 0))
+                        .build()),
+                //again
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(12,-63.5,0))
                         .build()),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(48,-72.5, Math.PI))
+                        .lineToLinearHeading(new Pose2d(36,-63.5,0))
+                        .build()),
+                new InstantTask(() -> arm.intake() ),
+                new WaitTask(1),
+                new InstantTask(() -> intake.in() ),
+                new WaitTask(2),
+                new InstantTask(() -> arm.wristHome() ),
+                new InstantTask(() -> intake.pause()),
+
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(12,-63.5, 0))
+                        .build()),
+                new InstantTask(() -> arm.wristLift() ),
+                new WaitTask(1),
+                new InstantTask(() -> arm.left() ),
+                new InstantTask(() -> arm.deliver3() ),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-12,-44, 0))
                         .build()),
                 new InstantTask(this::requestOpModeStop)
         ));
