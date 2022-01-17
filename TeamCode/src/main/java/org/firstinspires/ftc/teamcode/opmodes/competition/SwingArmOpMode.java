@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
 import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
 
 @TeleOp(name = "swing arm", group = "Quackology")
-@Disabled
+//@Disabled
 public class SwingArmOpMode extends OpMode {
     //private final Mecanum drivetrain = new Mecanum();
     private DriveTrainMecanumBasic drive;
