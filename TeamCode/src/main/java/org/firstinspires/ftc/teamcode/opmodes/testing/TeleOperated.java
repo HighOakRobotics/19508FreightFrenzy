@@ -58,7 +58,7 @@ public class TeleOperated extends SequoiaOpMode {
         gamepad2H.rightButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RIGHT);}));
         gamepad2H.leftButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.LEFT);}));
         gamepad2H.aButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.INTAKE);}));
-        gamepad2H.bButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER1);}));
+        gamepad2H.bButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER0);}));
         gamepad2H.xButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER2);}));
         gamepad2H.yButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER3);}));
         gamepad2H.rightBumperButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RELEASE);}));
