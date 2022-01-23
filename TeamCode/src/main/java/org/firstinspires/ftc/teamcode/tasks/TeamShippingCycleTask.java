@@ -13,6 +13,8 @@ public class TeamShippingCycleTask extends InstantTask {
         put(TeamShippingS.TSState.PICK, TeamShippingS.TSState.HOLD);
         put(TeamShippingS.TSState.HOLD, TeamShippingS.TSState.RELEASE);
         put(TeamShippingS.TSState.RELEASE, TeamShippingS.TSState.PICK);
+        put(TeamShippingS.TSState.UP, TeamShippingS.TSState.HOLD);
+        put(TeamShippingS.TSState.DOWN, TeamShippingS.TSState.PICK);
     }};
 
     public TeamShippingCycleTask(TeamShippingS teamShippingS) {

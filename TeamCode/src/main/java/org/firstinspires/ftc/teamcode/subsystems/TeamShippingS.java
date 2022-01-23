@@ -18,7 +18,7 @@ public class TeamShippingS extends Subsystem {
         return state;
     }
     public void setState(TSState state) {
-        this.state = state;
+        update(state);
     }
 
     public void update(TSState state) {
@@ -40,10 +40,10 @@ public class TeamShippingS extends Subsystem {
                 target = sStart;
                 break;
             case UP:
-                target -= 0.05;
+                target -= 0.02;
                 break;
             case DOWN:
-                target += 0.05;
+                target += 0.02;
                 break;
         }
     }
