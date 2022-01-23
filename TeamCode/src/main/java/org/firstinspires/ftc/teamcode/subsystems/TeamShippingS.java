@@ -8,7 +8,7 @@ public class TeamShippingS extends Subsystem {
     Servo tshoulder;
     double sStart = 0.88; //???
     double sPick = 0.78;
-    double sHold = 0.25;
+    double sHold = 0.23;
     double sRelease = 0.35;
     TSState state;
     double currPos;
