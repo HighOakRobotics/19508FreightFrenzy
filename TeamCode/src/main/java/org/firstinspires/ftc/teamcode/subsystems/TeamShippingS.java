@@ -25,6 +25,7 @@ public class TeamShippingS extends Subsystem {
         if(state != TeamShippingS.TSState.UP || state != TeamShippingS.TSState.DOWN)
             this.state = state;
 
+
         switch (state) {
             case PICK:
                 target = sPick;

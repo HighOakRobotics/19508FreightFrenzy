@@ -23,12 +23,14 @@ public class SwingArmS extends Subsystem {
     double hRelease3 = 0.05; //depend on the wrist position
     double hRelease2 = 0.15;
     double hRelease1 = 0.35;
+    double hRelease0 = 0.35;
     double hHold3 = 0.4;
     double hHold2 = 0.35;
     double hHold1 = 0.7;
-    double hAHold = 0.5;
+    double hHold0 = 0.65;
 
-    double sMiddle = 0.54; // middle   - more;
+
+    double sMiddle = 0.51; // middle   - more;
     double sLeft = 0.22;//lower
     double sRight = 0.85; // no wire now 0.9;
 
@@ -74,7 +76,7 @@ public class SwingArmS extends Subsystem {
     }
 
     public void wristLift(){
-        astate = ArmState.LIFT;
+        //astate = ArmState.LIFT;
         center();
         moveToTarget(-300, 0.2);
     }
@@ -83,12 +85,14 @@ public class SwingArmS extends Subsystem {
         if (wstate == WristState.LEVEL3) hand.setPosition(hRelease3);
         else if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
         else if (wstate == WristState.LEVEL1) hand.setPosition(hRelease1);
+        else if (wstate == WristState.LEVEL0) hand.setPosition(hRelease0);
     }
 
     public void retrieve(){
         if (wstate == WristState.LEVEL3) hand.setPosition(hHold3);
         if (wstate == WristState.LEVEL2) hand.setPosition(hHold2);
         if (wstate == WristState.LEVEL1) hand.setPosition(hHold1);
+        if (wstate == WristState.LEVEL0) hand.setPosition(hHold0);
     }
 
     public void intake() {
@@ -100,26 +104,35 @@ public class SwingArmS extends Subsystem {
     }
 
     public void deliver3 () {
-        astate = ArmState.DELIVER3;
+        //astate = ArmState.DELIVER3;
         update(hHold3, shoulder.getPosition());
         wstate = WristState.LEVEL3;
         moveToTarget(-430, 0.3);
     }
 
     public void deliver1() {
-        if (astate != ArmState.LIFT) return;
-        astate = ArmState.DELIVER1;
+        //if (astate != ArmState.LIFT) return;
+        //astate = ArmState.DELIVER1;
         update(hHold1, shoulder.getPosition());
         wstate = WristState.LEVEL1;
-        moveToTarget(-220, 0.2);
+        moveToTarget(-200, 0.2);
+        //orginally -220
     }
 
     public void deliver2() {
-        if (astate != ArmState.LIFT) return;
-        astate = ArmState.DELIVER2;
+        //if (astate != ArmState.LIFT) return;
+        //astate = ArmState.DELIVER2;
         update(hHold2, shoulder.getPosition());
         wstate = WristState.LEVEL2;
-        moveToTarget(-350, 0.2);
+        moveToTarget(-330, 0.2);
+        //orginally -350
+    }
+
+    public void deliver0 () {
+        //astate = ArmState.DELIVER3;
+        update(hHold0, shoulder.getPosition());
+        wstate = WristState.LEVEL1;
+        moveToTarget(-150, 0.1);
     }
 
     public double getHandPos() {return hand.getPosition(); }
@@ -135,12 +148,59 @@ public class SwingArmS extends Subsystem {
     }
 
     public void setMode(ArmState state) {
-        if (state == ArmState.HOME && (astate != ArmState.LIFT && astate != ArmState.INTAKE)) return;
-        if (state == ArmState.INTAKE && astate != ArmState.HOME) return;
-        if (state == ArmState.LEFT && astate != ArmState.LIFT) return;
-        if (state == ArmState.RIGHT && astate != ArmState.LIFT) return;
-        if (state == ArmState.DELIVER3 && (astate != ArmState.LEFT ||astate != ArmState.RIGHT )) return;
-        this.astate = state;
+        switch (state) {
+            case HOME:
+                if (astate == ArmState.INTAKE || astate == ArmState.LIFT )
+                    this.astate = state;
+                break;
+            case LIFT:
+                if (astate != ArmState.INTAKE ) this.astate = state;
+                break;
+            case INTAKE:
+                if (astate == ArmState.HOME)
+                    this.astate = state;
+                break;
+            case DELIVER1:
+                if (astate == ArmState.LEFT ||astate == ArmState.RIGHT )
+                    this.astate = state;
+                break;
+            case DELIVER2:
+                if (astate == ArmState.LEFT ||astate == ArmState.RIGHT )
+                    this.astate = state;
+                break;
+            case DELIVER3:
+                if (astate == ArmState.LEFT ||astate == ArmState.RIGHT )
+                    this.astate = state;
+                break;
+            case DELIVER0:
+                if (astate == ArmState.LEFT ||astate == ArmState.RIGHT )
+                    this.astate = state;
+                break;
+            case LEFT:
+                if (astate == ArmState.LIFT )
+                    this.astate = state;
+                break;
+            case RIGHT:
+                if (astate == ArmState.LIFT )
+                    this.astate = state;
+                break;
+            case RELEASE:
+                if (astate == ArmState.DELIVER1 || astate == ArmState.DELIVER2 ||
+                        astate == ArmState.DELIVER3 || astate == ArmState.DELIVER0 ||
+                        astate == ArmState.RETRIVE )
+                    this.astate = state;
+                break;
+            case RETRIVE:
+                if (astate == ArmState.RELEASE)
+                    this.astate = state;
+                break;
+        }
+        //if (state == ArmState.HOME && (astate != ArmState.LIFT && astate != ArmState.INTAKE)) return;
+        //else if (state == ArmState.INTAKE && astate == ArmState.HOME) return;
+        //else if (state == ArmState.LEFT && astate != ArmState.LIFT) return;
+        //else if (state == ArmState.RIGHT && astate != ArmState.LIFT) return;
+        //else if (state == ArmState.DELIVER3 && (astate != ArmState.LEFT ||astate != ArmState.RIGHT )) return;
+
     }
 
     @Override
@@ -191,6 +251,9 @@ public class SwingArmS extends Subsystem {
             case DELIVER3:
                 deliver3();
                 break;
+            case DELIVER0:
+                deliver0();
+                break;
             case LEFT:
                 left();
                 break;
@@ -222,6 +285,7 @@ public class SwingArmS extends Subsystem {
         LEVEL1,
         LEVEL2,
         LEVEL3,
+        LEVEL0,
         TEAM
     }
     public enum ShoulderState {
@@ -236,6 +300,7 @@ public class SwingArmS extends Subsystem {
         DELIVER1,
         DELIVER2,
         DELIVER3,
+        DELIVER0,
         LEFT,
         RIGHT,
         RELEASE,
