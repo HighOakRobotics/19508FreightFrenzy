@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.competition;
+package org.firstinspires.ftc.teamcode.opmodes.meet3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
