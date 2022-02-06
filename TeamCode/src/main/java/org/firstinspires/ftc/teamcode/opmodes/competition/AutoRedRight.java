@@ -43,7 +43,7 @@ public class AutoRedRight extends SequoiaOpMode {
 
     Pose2d startPos = new Pose2d(12,-63.5, 0);
     Pose2d intakePos = new Pose2d(48,-63.5, 0);
-    Pose2d deliver3Pos = new Pose2d(-12,-43,0);
+    Pose2d deliver3Pos = new Pose2d(-12,-32,0);
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
         put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(
@@ -52,7 +52,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-48,0))
+                        .lineToLinearHeading(new Pose2d(-10, deliver3Pos.getY()-7,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
@@ -61,7 +61,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-46,0))
+                        .lineToLinearHeading(new Pose2d(-10,deliver3Pos.getY()-7,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
@@ -130,6 +130,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LEFT) ),
 
                 new SwitchTask(positionMap, () -> position),
+                new WaitTask(500, TimeUnit.MILLISECONDS),
                 new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
                 new WaitTask(200, TimeUnit.MILLISECONDS),
 

@@ -30,7 +30,7 @@ public class SwingArmS extends Subsystem {
     double hHold0 = 0.65;
 
 
-    double sMiddle = 0.51; // middle   - more;
+    double sMiddle = 0.57; // middle   - more;
     double sLeft = 0.22;//lower
     double sRight = 0.85; // no wire now 0.9;
 
@@ -115,7 +115,7 @@ public class SwingArmS extends Subsystem {
         //astate = ArmState.DELIVER1;
         update(hHold1, shoulder.getPosition());
         wstate = WristState.LEVEL1;
-        moveToTarget(-200, 0.2);
+        moveToTarget(-210, 0.2);
         //orginally -220
     }
 
@@ -124,7 +124,7 @@ public class SwingArmS extends Subsystem {
         //astate = ArmState.DELIVER2;
         update(hHold2, shoulder.getPosition());
         wstate = WristState.LEVEL2;
-        moveToTarget(-330, 0.2);
+        moveToTarget(-350, 0.2);
         //orginally -350
     }
 
