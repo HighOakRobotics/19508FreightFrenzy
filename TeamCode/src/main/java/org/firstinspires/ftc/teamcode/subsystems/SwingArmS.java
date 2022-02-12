@@ -21,11 +21,11 @@ public class SwingArmS extends Subsystem {
     double hIntake = 0.68; //0.6; //hold position 0.3 intake
     double hHome = 0.85;//home position too much
     double hRelease3 = 0.05; //depend on the wrist position
-    double hRelease2 = 0.15;
+    double hRelease2 = 0.10;
     double hRelease1 = 0.35;
     double hRelease0 = 0.35;
     double hHold3 = 0.4;
-    double hHold2 = 0.35;
+    double hHold2 = 0.45;
     double hHold1 = 0.7;
     double hHold0 = 0.65;
 

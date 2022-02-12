@@ -40,9 +40,9 @@ public class AutoRedLeft extends SequoiaOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
-    Pose2d startPos = new Pose2d(12,-36, 0);
-    Pose2d intakePos = new Pose2d(48,-63.5, 0);
-    Pose2d deliver3Pos = new Pose2d(-12,-32,0);
+    Pose2d gatePos = new Pose2d(0,-65, 0);
+    Pose2d intakePos = new Pose2d(35,-63.5, 0);
+    Pose2d deliver3Pos = new Pose2d(-16,-35,0);
 
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
@@ -52,7 +52,7 @@ public class AutoRedLeft extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-10, deliver3Pos.getY()-7,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-9.5,0))
                         .build())
 
         ));
@@ -62,8 +62,9 @@ public class AutoRedLeft extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-10, deliver3Pos.getY()-7,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-7.5,0))
                         .build())
+                //y-position is too much
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -78,7 +79,7 @@ public class AutoRedLeft extends SequoiaOpMode {
 
     @Override
     public void initTriggers() {
-        drive.mecanum().setPoseEstimate(new Pose2d(-33,-63.5));
+        drive.mecanum().setPoseEstimate(new Pose2d(-30,-63.5, 0));
     }
 
     @Override
@@ -90,46 +91,48 @@ public class AutoRedLeft extends SequoiaOpMode {
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
                         .lineToLinearHeading(new Pose2d(-51,-63.5,0))
                         .build()),
+
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-62.5,-62.5,Math.PI/4))
+                        .lineToLinearHeading(new Pose2d(-59,-61.5,Math.PI/4))
                         .build()),
+                //new InstantTask(() -> drive.mecanum().turn(Math.PI/4)),
                 new InstantTask(() -> carousel.red()),
-                new WaitTask(2000,TimeUnit.MILLISECONDS),
+                new WaitTask(2500,TimeUnit.MILLISECONDS),
                 new InstantTask(() -> carousel.pause()),
 
-                new WaitTask(30000,TimeUnit.MILLISECONDS),
-
+//                new WaitTask(3000,TimeUnit.MILLISECONDS),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(new Pose2d(-50,-56,0))
+                        .build()),
+//                new WaitTask(30000,TimeUnit.MILLISECONDS),
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LIFT) ),
                 new WaitTask(500, TimeUnit.MILLISECONDS),
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LEFT) ),
 
                 new SwitchTask(positionMap, () -> position),
-                new WaitTask(500, TimeUnit.MILLISECONDS),
+                new WaitTask(1000, TimeUnit.MILLISECONDS),
                 new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
-                new WaitTask(200, TimeUnit.MILLISECONDS),
+                new WaitTask(1000, TimeUnit.MILLISECONDS),
+                //new WaitTask(30000,TimeUnit.MILLISECONDS),
 
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(startPos)
+                        .lineToLinearHeading(gatePos)
                         .build()),
 
-                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.DELIVER2)),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RETRIVE) ),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.DELIVER2) ),
+                new WaitTask(100, TimeUnit.MILLISECONDS),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.LIFT) ),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.HOME) ),
+
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-66.5,-59.5,-Math.PI/2))
+                        .lineToLinearHeading(intakePos)
                         .build()),
-                new InstantTask(() -> carousel.red()),
-                new WaitTask(3),
-                new InstantTask(() -> carousel.stop()),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(0,-72.5,Math.PI))
-                        .build()),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(48,-72.5,Math.PI))
-                        .build()),
+
                 new InstantTask(this::requestOpModeStop)
         ));
     }
