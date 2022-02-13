@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.ftc11392.sequoia.SequoiaOpMode;
 import com.ftc11392.sequoia.task.InstantTask;
 import com.ftc11392.sequoia.task.SequentialTaskBundle;
@@ -21,32 +22,32 @@ import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselS;
 import org.firstinspires.ftc.teamcode.subsystems.DuckDetector;
-import org.firstinspires.ftc.teamcode.subsystems.EyeOpenCV;
 import org.firstinspires.ftc.teamcode.subsystems.Gripper;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeS;
 import org.firstinspires.ftc.teamcode.subsystems.Mecanum;
 import org.firstinspires.ftc.teamcode.subsystems.Rotator;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArmS;
-import org.firstinspires.ftc.teamcode.subsystems.TeamShippingS;
 import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
-import org.firstinspires.ftc.teamcode.tasks.TimedDriveTask;
 
-@Autonomous(name = "S Blue Right", group = "Quackology")
+@Autonomous(name = "Auto Blue Right", group = "Quackology")
 //@Disabled
-
 public class AutoBlueRight extends SequoiaOpMode {
     DuckDetector duckDetector = new DuckDetector(0, 140, 280);
     private final Mecanum drive = new Mecanum();
+    private CarouselS carousel = new CarouselS();
     private IntakeS intake = new IntakeS();
     private SwingArmS arm = new SwingArmS();
-    private CarouselS carousel = new CarouselS();
 
     ElapsedTime runtime = new ElapsedTime();
 
-    Pose2d startPos = new Pose2d(12,63.5, 0);
-    Pose2d intakePos = new Pose2d(48,63.5, 0);
-    Pose2d deliver3Pos = new Pose2d(-12,-32,0);
-    Pose2d carouselPos = new Pose2d(-48,-63.5,0);
+    Pose2d gatePos = new Pose2d(4,68,Math.PI*2);
+    Pose2d intakePos = new Pose2d(38,65, Math.PI*2);
+    Pose2d deliver3Pos = new Pose2d(-13.5,39,Math.PI*2);
+    Pose2d startPos = new Pose2d(-33.5,63.5,Math.PI);
+    Pose2d preCarouselPos = new Pose2d(-55,55,Math.toRadians(315));
+    Pose2d carouselPos = new Pose2d(-58,58,Math.toRadians(315));
+
+
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
         put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -54,8 +55,9 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-48,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()+6.5,0))
                         .build())
+
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -63,8 +65,9 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-12,-46,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()+5,0))
                         .build())
+                //y-position is too much
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -77,46 +80,6 @@ public class AutoBlueRight extends SequoiaOpMode {
         ));
     }};
 
-    SequentialTaskBundle deliverTask = new SequentialTaskBundle(
-            new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LIFT) ),
-            new WaitTask(500, TimeUnit.MILLISECONDS),
-            new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LEFT) ),
-            new InstantTask(() -> {
-                arm.setMode(SwingArmS.ArmState.DELIVER3);
-            }),
-            new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                    .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                    .lineToLinearHeading(startPos)
-                    .lineToLinearHeading(deliver3Pos)
-                    .build()),
-            new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
-            new WaitTask(200, TimeUnit.MILLISECONDS),
-
-            new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                    .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                    .lineToLinearHeading(startPos)
-                    .build()),
-            new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RETRIVE) ),
-            new InstantTask(() -> arm.setMode(SwingArmS.ArmState.DELIVER2) ),
-            new WaitTask(100, TimeUnit.MILLISECONDS),
-            new InstantTask(() -> arm.setMode(SwingArmS.ArmState.LIFT) ),
-            new InstantTask(() -> arm.setMode(SwingArmS.ArmState.HOME) ),
-
-            new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                    .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                    .lineToLinearHeading(intakePos)
-                    .build())
-    );
-
-    SequentialTaskBundle intakeTask = new SequentialTaskBundle(
-            new InstantTask( () -> arm.setMode(SwingArmS.ArmState.INTAKE)),
-            new InstantTask(() -> intake.in() ),
-            new WaitTask(1000, TimeUnit.MILLISECONDS),
-            new InstantTask( () -> arm.setMode(SwingArmS.ArmState.HOME)),
-            new WaitTask(100, TimeUnit.MILLISECONDS),
-            new InstantTask(() -> intake.pause() )
-    );
-
     @Override
     public void initTriggers() {
         drive.mecanum().setPoseEstimate(startPos);
@@ -124,41 +87,52 @@ public class AutoBlueRight extends SequoiaOpMode {
 
     @Override
     public void runTriggers() {
+
         DuckDetector.DuckPipeline.DuckPosition position = duckDetector.getAnalysis();
         scheduler.schedule(new SequentialTaskBundle(
-                //WaitTask(200, TimeUnit.MILLISECONDS),
-                new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LIFT) ),
-                new WaitTask(500, TimeUnit.MILLISECONDS),
-                new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LEFT) ),
-
-                new SwitchTask(positionMap, () -> position),
-                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
-                new WaitTask(200, TimeUnit.MILLISECONDS),
-                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RETRIVE) ),
-
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(startPos)
+                        .lineToLinearHeading(preCarouselPos)
                         .build()),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
                         .lineToLinearHeading(carouselPos)
                         .build()),
-                new InstantTask(() -> carousel.setSetpoint(10) ),
+
+                new WaitTask(1000,TimeUnit.MILLISECONDS),
+                new InstantTask(() -> carousel.blue()),
+                new WaitTask(2500,TimeUnit.MILLISECONDS),
+                new InstantTask(() -> carousel.pause()),
+                new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LIFT) ),
+                new WaitTask(500, TimeUnit.MILLISECONDS),
+                new InstantTask( () -> arm.setMode(SwingArmS.ArmState.RIGHT) ),
+                new WaitTask(500, TimeUnit.MILLISECONDS),
+                new SwitchTask(positionMap, () -> position),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(deliver3Pos)
+                        .build()),
                 new WaitTask(1000, TimeUnit.MILLISECONDS),
-                new InstantTask(() -> carousel.setSetpoint(0) ),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
+                new WaitTask(1000, TimeUnit.MILLISECONDS),
+
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(gatePos)
+                        .build()),
+
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RETRIVE) ),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.DELIVER2) ),
+                new WaitTask(100, TimeUnit.MILLISECONDS),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.LIFT) ),
+                new InstantTask(() -> arm.setMode(SwingArmS.ArmState.HOME) ),
+
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
                         .lineToLinearHeading(intakePos)
                         .build()),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(48,-55, 0))
-                        .build()), //this is just to move to the side a bit for the other robot to fit, subject to change
 
                 new InstantTask(this::requestOpModeStop)
         ));
     }
-
-
 }
