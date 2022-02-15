@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.subsystems.TeamShippingS;
 import org.firstinspires.ftc.teamcode.tasks.FollowTrajectoryTask;
 import org.firstinspires.ftc.teamcode.tasks.TimedDriveTask;
 
-@Autonomous(name = "S Blue Left", group = "Quackology")
+@Autonomous(name = "Auto Blue Left", group = "Quackology")
 //@Disabled
 
 public class AutoBlueLeft extends SequoiaOpMode {

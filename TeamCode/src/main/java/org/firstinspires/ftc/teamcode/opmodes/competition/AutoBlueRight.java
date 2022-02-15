@@ -42,10 +42,12 @@ public class AutoBlueRight extends SequoiaOpMode {
 
     Pose2d gatePos = new Pose2d(4,68,Math.PI*2);
     Pose2d intakePos = new Pose2d(38,65, Math.PI*2);
-    Pose2d deliver3Pos = new Pose2d(-13.5,39,Math.PI*2);
+    Pose2d deliver3Pos = new Pose2d(-14.5,37.5,Math.PI*2);
     Pose2d startPos = new Pose2d(-33.5,63.5,Math.PI);
     Pose2d preCarouselPos = new Pose2d(-55,55,Math.toRadians(315));
-    Pose2d carouselPos = new Pose2d(-58,58,Math.toRadians(315));
+    Pose2d carouselPos = new Pose2d(-58,59.5,Math.toRadians(360));
+    Pose2d anteStartPos = new Pose2d(-35,58,Math.PI);
+
 
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
@@ -55,7 +57,7 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()+6.5,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-7.5,0))
                         .build())
 
         ));
@@ -65,9 +67,8 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()+5,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-6,0))
                         .build())
-                //y-position is too much
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -92,6 +93,10 @@ public class AutoBlueRight extends SequoiaOpMode {
         scheduler.schedule(new SequentialTaskBundle(
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
+                        .lineToLinearHeading(anteStartPos)
+                        .build()),
+                new FollowTrajectoryTask(drive, () -> drive.mecanum()
+                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
                         .lineToLinearHeading(preCarouselPos)
                         .build()),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
@@ -101,7 +106,7 @@ public class AutoBlueRight extends SequoiaOpMode {
 
                 new WaitTask(1000,TimeUnit.MILLISECONDS),
                 new InstantTask(() -> carousel.blue()),
-                new WaitTask(2500,TimeUnit.MILLISECONDS),
+                new WaitTask(3000,TimeUnit.MILLISECONDS),
                 new InstantTask(() -> carousel.pause()),
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LIFT) ),
                 new WaitTask(500, TimeUnit.MILLISECONDS),
@@ -131,6 +136,7 @@ public class AutoBlueRight extends SequoiaOpMode {
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
                         .lineToLinearHeading(intakePos)
                         .build()),
+                new WaitTask(1000, TimeUnit.MILLISECONDS),
 
                 new InstantTask(this::requestOpModeStop)
         ));

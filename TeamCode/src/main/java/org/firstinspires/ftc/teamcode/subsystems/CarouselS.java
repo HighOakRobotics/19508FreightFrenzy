@@ -20,9 +20,9 @@ public class CarouselS extends Subsystem {
         this.setpoint = setpoint;
     }
 
-    public void blue() { power = 0.7; }
+    public void blue() { power = 0.6; }
     public void inSlow() { power = -.2; }
-    public void red() { power = -0.7; }
+    public void red() { power = -0.6; }
     public void pause() { power = 0.0; }
 
     @Override
