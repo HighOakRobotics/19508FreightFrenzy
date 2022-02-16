@@ -40,10 +40,9 @@ public class AutoBlueLeft extends SequoiaOpMode {
     private SwingArmS arm = new SwingArmS();
 
     ElapsedTime runtime = new ElapsedTime();
-
-    Pose2d gatePos = new Pose2d(8.5,65, Math.PI);
-    Pose2d startPos = new Pose2d(8.5,63.5, Math.PI);
-    Pose2d intakePos = new Pose2d(42,65, Math.PI);
+    Pose2d gatePos = new Pose2d(8.5,66.5, Math.PI);
+    Pose2d startPos = new Pose2d(8.5,65, Math.PI);
+    Pose2d intakePos = new Pose2d(42,66.5, Math.PI);
     Pose2d deliver3Pos = new Pose2d(-12,34,Math.PI);
     Pose2d parkPos = new Pose2d(42,40,Math.PI);
 
@@ -63,7 +62,7 @@ public class AutoBlueLeft extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(),deliver3Pos.getY()+5,Math.PI))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(),deliver3Pos.getY()+4,Math.PI))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
