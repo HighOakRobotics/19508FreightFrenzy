@@ -41,11 +41,11 @@ public class AutoRedRight extends SequoiaOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
-    Pose2d startPos = new Pose2d(12,-63.5, 0);
-    Pose2d gatePos = new Pose2d(12,-65, 0);
-    Pose2d intakePos = new Pose2d(42,-63.5, 0);
-    Pose2d deliver3Pos = new Pose2d(-12,-32,0);
-    Pose2d parkPos = new Pose2d(42,-30,0);
+    Pose2d startPos = new Pose2d(12,-65, 0);
+    Pose2d gatePos = new Pose2d(12,-66, 0);
+    Pose2d intakePos = new Pose2d(42,-66, 0);
+    Pose2d deliver3Pos = new Pose2d(-12,-36,0);
+    Pose2d parkPos = new Pose2d(42,-36,0);
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
         put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(
@@ -54,7 +54,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-10, deliver3Pos.getY()-7,0))
+                        .lineToLinearHeading(new Pose2d(-10, deliver3Pos.getY()-6.25,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
@@ -90,7 +90,7 @@ public class AutoRedRight extends SequoiaOpMode {
                     .lineToLinearHeading(deliver3Pos)
                     .build()),
             new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
-            new WaitTask(200, TimeUnit.MILLISECONDS),
+            new WaitTask(3000, TimeUnit.MILLISECONDS),
 
             new FollowTrajectoryTask(drive, () -> drive.mecanum()
                     .trajectoryBuilder(drive.mecanum().getPoseEstimate())
@@ -134,7 +134,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 new SwitchTask(positionMap, () -> position),
                 new WaitTask(500, TimeUnit.MILLISECONDS),
                 new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
-                new WaitTask(200, TimeUnit.MILLISECONDS),
+                new WaitTask(1000, TimeUnit.MILLISECONDS),
 
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())

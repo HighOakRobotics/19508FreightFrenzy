@@ -42,7 +42,7 @@ public class AutoRedLeft extends SequoiaOpMode {
 
     Pose2d gatePos = new Pose2d(0,-65, 0);
     Pose2d intakePos = new Pose2d(35,-63.5, 0);
-    Pose2d deliver3Pos = new Pose2d(-16,-35,0);
+    Pose2d deliver3Pos = new Pose2d(-16,-36,0);
 
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
@@ -52,7 +52,7 @@ public class AutoRedLeft extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-9.5,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-10.5,0))
                         .build())
 
         ));
@@ -79,7 +79,7 @@ public class AutoRedLeft extends SequoiaOpMode {
 
     @Override
     public void initTriggers() {
-        drive.mecanum().setPoseEstimate(new Pose2d(-30,-63.5, 0));
+        drive.mecanum().setPoseEstimate(new Pose2d(-30,-65, 0));
     }
 
     @Override

@@ -42,7 +42,7 @@ public class AutoBlueRight extends SequoiaOpMode {
 
     Pose2d gatePos = new Pose2d(4,68,Math.PI*2);
     Pose2d intakePos = new Pose2d(38,65, Math.PI*2);
-    Pose2d deliver3Pos = new Pose2d(-14.5,37.5,Math.PI*2);
+    Pose2d deliver3Pos = new Pose2d(-13.5,36,Math.PI*2);
     Pose2d startPos = new Pose2d(-33.5,63.5,Math.PI);
     Pose2d preCarouselPos = new Pose2d(-55,55,Math.toRadians(315));
     Pose2d carouselPos = new Pose2d(-58,59.5,Math.toRadians(360));
@@ -52,14 +52,14 @@ public class AutoBlueRight extends SequoiaOpMode {
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
         put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(
-                new InstantTask(() -> {
-                    arm.setMode(SwingArmS.ArmState.DELIVER1);
-                }),
+
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-7.5,0))
-                        .build())
-
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX()-2.5, deliver3Pos.getY()+10,0))
+                        .build()),
+                new InstantTask(() -> {
+                    arm.setMode(SwingArmS.ArmState.DELIVER1);
+                })
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.CENTER, new SequentialTaskBundle(
                 new InstantTask(() -> {
@@ -67,7 +67,7 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()-6,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX()-2, deliver3Pos.getY()+4.5,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
@@ -76,7 +76,7 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(deliver3Pos)
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX(), deliver3Pos.getY()+.5,0))
                         .build())
         ));
     }};
@@ -113,10 +113,6 @@ public class AutoBlueRight extends SequoiaOpMode {
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.RIGHT) ),
                 new WaitTask(500, TimeUnit.MILLISECONDS),
                 new SwitchTask(positionMap, () -> position),
-                new FollowTrajectoryTask(drive, () -> drive.mecanum()
-                        .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(deliver3Pos)
-                        .build()),
                 new WaitTask(1000, TimeUnit.MILLISECONDS),
                 new InstantTask(() -> arm.setMode(SwingArmS.ArmState.RELEASE) ),
                 new WaitTask(1000, TimeUnit.MILLISECONDS),
