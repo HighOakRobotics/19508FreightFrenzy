@@ -67,7 +67,7 @@ public class AutoBlueRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX()-2, deliver3Pos.getY()+4.5,0))
+                        .lineToLinearHeading(new Pose2d(deliver3Pos.getX()-2, deliver3Pos.getY()+4,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(

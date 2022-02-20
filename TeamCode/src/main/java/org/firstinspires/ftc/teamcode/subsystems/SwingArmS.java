@@ -132,7 +132,7 @@ public class SwingArmS extends Subsystem {
         //astate = ArmState.DELIVER3;
         update(hHold0, shoulder.getPosition());
         wstate = WristState.LEVEL1;
-        moveToTarget(-150, 0.1);
+        moveToTarget(-175, 0.1);
     }
 
     public double getHandPos() {return hand.getPosition(); }

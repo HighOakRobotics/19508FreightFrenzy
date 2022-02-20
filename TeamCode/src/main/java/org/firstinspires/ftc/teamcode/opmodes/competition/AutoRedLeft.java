@@ -94,7 +94,7 @@ public class AutoRedLeft extends SequoiaOpMode {
 
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-59,-61.5,Math.PI/4))
+                        .lineToLinearHeading(new Pose2d(-59,-61.5,Math.PI/3))
                         .build()),
                 //new InstantTask(() -> drive.mecanum().turn(Math.PI/4)),
                 new InstantTask(() -> carousel.red()),

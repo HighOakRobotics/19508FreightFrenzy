@@ -42,9 +42,9 @@ public class AutoBlueLeft extends SequoiaOpMode {
     ElapsedTime runtime = new ElapsedTime();
     Pose2d gatePos = new Pose2d(8.5,67.5, Math.PI);
     Pose2d startPos = new Pose2d(8.5,65, Math.PI);
-    Pose2d intakePos = new Pose2d(45,67.5, Math.PI);
+    Pose2d intakePos = new Pose2d(42,67.5, Math.PI);
     Pose2d deliver3Pos = new Pose2d(-13,36,Math.PI);
-    Pose2d parkPos = new Pose2d(45,40,Math.PI);
+    Pose2d parkPos = new Pose2d(42,40,Math.PI);
 
     Map<Object, Task> positionMap = new HashMap<Object, Task>(){{
         put(DuckDetector.DuckPipeline.DuckPosition.LEFT, new SequentialTaskBundle(

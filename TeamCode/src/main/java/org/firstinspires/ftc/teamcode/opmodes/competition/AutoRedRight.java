@@ -63,7 +63,7 @@ public class AutoRedRight extends SequoiaOpMode {
                 }),
                 new FollowTrajectoryTask(drive, () -> drive.mecanum()
                         .trajectoryBuilder(drive.mecanum().getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(-10,deliver3Pos.getY()-5,0))
+                        .lineToLinearHeading(new Pose2d(-10,deliver3Pos.getY()-2.5,0))
                         .build())
         ));
         put(DuckDetector.DuckPipeline.DuckPosition.RIGHT, new SequentialTaskBundle(
@@ -126,7 +126,6 @@ public class AutoRedRight extends SequoiaOpMode {
     public void runTriggers() {
         DuckDetector.DuckPipeline.DuckPosition position = duckDetector.getAnalysis();
         scheduler.schedule(new SequentialTaskBundle(
-                //WaitTask(200, TimeUnit.MILLISECONDS),
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LIFT) ),
                 new WaitTask(500, TimeUnit.MILLISECONDS),
                 new InstantTask( () -> arm.setMode(SwingArmS.ArmState.LEFT) ),
