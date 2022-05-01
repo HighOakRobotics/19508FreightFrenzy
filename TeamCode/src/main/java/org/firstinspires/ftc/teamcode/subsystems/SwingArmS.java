@@ -29,6 +29,11 @@ public class SwingArmS extends Subsystem {
     double hHold1 = 0.7;
     double hHold0 = 0.65;
 
+    double hHoldSet = .8;
+    double hHoldAdjust = .6;
+
+
+
 
     double sMiddle = 0.57; // middle   - more;
     double sLeft = 0.22;//lower
@@ -81,6 +86,16 @@ public class SwingArmS extends Subsystem {
         moveToTarget(-300, 0.2);
     }
 
+    public void wristSet(){
+        center();
+        moveToTarget(-500,.2);
+    }
+
+    public void wristAdjust(){
+        center();
+        moveToTarget(-500,.2);
+    }
+
     public void release() {
         if (wstate == WristState.LEVEL3) hand.setPosition(hRelease3);
         else if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
@@ -93,6 +108,8 @@ public class SwingArmS extends Subsystem {
         if (wstate == WristState.LEVEL2) hand.setPosition(hHold2);
         if (wstate == WristState.LEVEL1) hand.setPosition(hHold1);
         if (wstate == WristState.LEVEL0) hand.setPosition(hHold0);
+        if (wstate == WristState.WRISTSET) hand.setPosition(hHoldSet);
+        if (wstate == WristState.WRISTADJUST) hand.setPosition(hHoldAdjust);
     }
 
     public void intake() {
@@ -134,6 +151,7 @@ public class SwingArmS extends Subsystem {
         wstate = WristState.LEVEL1;
         moveToTarget(-175, 0.1);
     }
+
 
     public double getHandPos() {return hand.getPosition(); }
     public double getShoulderPos() {return shoulder.getPosition(); }
@@ -239,6 +257,12 @@ public class SwingArmS extends Subsystem {
             case LIFT:
                 wristLift();
                 break;
+            case WRISTSET:
+                wristSet();
+                break;
+            case WRISTADJUST:
+                wristAdjust();
+                break;
             case INTAKE:
                 intake();
                 break;
@@ -286,6 +310,8 @@ public class SwingArmS extends Subsystem {
         LEVEL2,
         LEVEL3,
         LEVEL0,
+        WRISTSET,
+        WRISTADJUST,
         TEAM
     }
     public enum ShoulderState {
@@ -297,6 +323,8 @@ public class SwingArmS extends Subsystem {
         HOME,
         INTAKE,
         LIFT,
+        WRISTSET,
+        WRISTADJUST,
         DELIVER1,
         DELIVER2,
         DELIVER3,
@@ -304,7 +332,7 @@ public class SwingArmS extends Subsystem {
         LEFT,
         RIGHT,
         RELEASE,
-        RETRIVE
+        RETRIVE,
     }
 
     WristState wstate;

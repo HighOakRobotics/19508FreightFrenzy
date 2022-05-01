@@ -55,8 +55,10 @@ public class TeleOperated extends SequoiaOpMode {
 //
         gamepad2H.downButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.HOME);}));
         gamepad2H.upButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.LIFT);}));
-        gamepad2H.rightButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RIGHT);}));
-        gamepad2H.leftButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.LEFT);}));
+        gamepad2H.rightButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.WRISTSET);}));
+        gamepad2H.leftButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.WRISTADJUST);}));
+        //gamepad2H.rightButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.RIGHT);}));
+        //gamepad2H.leftButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.LEFT);}));
         gamepad2H.aButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.INTAKE);}));
         gamepad2H.bButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER0);}));
         gamepad2H.xButton().onPress(new InstantTask( () -> {arm.setMode(SwingArmS.ArmState.DELIVER2);}));
