@@ -18,7 +18,7 @@ public class AutoBlue extends SequoiaOpMode {
     @Override
     public void runTriggers() {
         scheduler.schedule(new SequentialTaskBundle(
-                new WaitTask(365, TimeUnit.DAYS)
+                new WaitTask(1461, TimeUnit.DAYS)
         ));
     }
 }
