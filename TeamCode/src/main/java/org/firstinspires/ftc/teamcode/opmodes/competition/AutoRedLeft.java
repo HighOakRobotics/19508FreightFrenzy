@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.competition;
+/*package org.firstinspires.ftc.teamcode.opmodes.competition;
 
 
 import java.util.HashMap;
@@ -140,4 +140,4 @@ public class AutoRedLeft extends SequoiaOpMode {
 //are we using rotator or carousel
 //1. deliver duck
 //2. spin carousel
-//3. park in warehouse
+//3. park in warehouse*/

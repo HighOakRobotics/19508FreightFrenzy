@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.competition;
 
 
-import java.util.HashMap;
+/*import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -159,4 +159,4 @@ public class AutoRedRight extends SequoiaOpMode {
     }
 
 
-}
+}*/

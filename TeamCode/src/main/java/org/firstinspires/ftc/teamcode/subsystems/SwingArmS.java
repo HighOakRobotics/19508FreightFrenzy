@@ -11,13 +11,13 @@ import com.qualcomm.robotcore.util.Range;
 
 public class SwingArmS extends Subsystem {
     DcMotorEx wrist;
-    private static final double TICKS_PER_MOTOR_REV     = 1120; // andymark neverest 40 gear
+    private static final double TICKS_PER_MOTOR_REV    = 537.7; // 312 rmp gobuilda motor
     private static final double WHEEL_DIAMETER_INCHES   = 1;
     public static final double TICKS_PER_INCH = TICKS_PER_MOTOR_REV / (WHEEL_DIAMETER_INCHES * Math.PI);
     int kWristHigh = -450;
     int kWristLow = 0;
 
-    Servo hand,  shoulder;
+    Servo hand, shoulder;
     double hIntake = 0.68; //0.6; //hold position 0.3 intake
     double hHome = 0.85;//home position too much
     double hRelease3 = 0.05; //depend on the wrist position
@@ -51,30 +51,30 @@ public class SwingArmS extends Subsystem {
 
     public void center() {
         //if (astate != ArmState.LIFT && astate != ArmState.HOME && astate != ArmState.INTAKE) return;
-        sstate = ShoulderState.MIDDLE;
+        //sstate = ShoulderState.MIDDLE;
         update(hHome, sMiddle);
     }
 
     public void left() {
         update (hand.getPosition(), sLeft);
-        sstate = ShoulderState.LEFT;
+        //sstate = ShoulderState.LEFT;
     }
 
     public void right() {
         update (hand.getPosition(), sRight);
-        sstate = ShoulderState.RIGHT;
+        //sstate = ShoulderState.RIGHT;
     }
 
     public void moveToTarget(int target, double power) {
         wrist.setPower(power);
         wrist.setTargetPosition(target);
-        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);//Wrist is the motor confirmed
         if (wrist.isBusy()) busy = true;
         else busy = false;
     }
     public void wristHome(){
-        if(astate != ArmState.LIFT && astate != ArmState.INTAKE && astate != ArmState.HOME) return;
-        astate = ArmState.HOME;
+        //if(astate != ArmState.LIFT && astate != ArmState.INTAKE && astate != ArmState.HOME) return;
+        //astate = ArmState.HOME;
         center();
         moveToTarget(0, 0.1);
         if (!busy) wrist.setPower(0);
@@ -83,55 +83,55 @@ public class SwingArmS extends Subsystem {
     public void wristLift(){
         //astate = ArmState.LIFT;
         center();
-        moveToTarget(-300, 0.2);
+        moveToTarget(-300, .3);
     }
 
     public void wristSet(){
         center();
-        moveToTarget(-500,.2);
+        moveToTarget(-500,.3);
     }
 
     public void wristAdjust(){
         center();
-        moveToTarget(-500,.2);
+        moveToTarget(-500,.3);
     }
 
-    public void release() {
+   /* public void release() {
         if (wstate == WristState.LEVEL3) hand.setPosition(hRelease3);
         else if (wstate == WristState.LEVEL2) hand.setPosition(hRelease2);
         else if (wstate == WristState.LEVEL1) hand.setPosition(hRelease1);
         else if (wstate == WristState.LEVEL0) hand.setPosition(hRelease0);
-    }
+    }*/
 
-    public void retrieve(){
+    /*public void retrieve(){
         if (wstate == WristState.LEVEL3) hand.setPosition(hHold3);
         if (wstate == WristState.LEVEL2) hand.setPosition(hHold2);
         if (wstate == WristState.LEVEL1) hand.setPosition(hHold1);
         if (wstate == WristState.LEVEL0) hand.setPosition(hHold0);
         if (wstate == WristState.WRISTSET) hand.setPosition(hHoldSet);
         if (wstate == WristState.WRISTADJUST) hand.setPosition(hHoldAdjust);
-    }
+    }*/
 
     public void intake() {
         //if (astate != ArmState.HOME) return; //intake can only go from home state
         update(hIntake, sMiddle);
-        wstate = WristState.HOME;
-        sstate = ShoulderState.MIDDLE;
-        astate = ArmState.INTAKE;
+        //wstate = WristState.HOME;
+        //sstate = ShoulderState.MIDDLE;
+        //astate = ArmState.INTAKE;
     }
 
     public void deliver3 () {
         //astate = ArmState.DELIVER3;
-        update(hHold3, shoulder.getPosition());
-        wstate = WristState.LEVEL3;
+        //update(hHold3, shoulder.getPosition());
+        //wstate = WristState.LEVEL3;
         moveToTarget(-430, 0.3);
     }
 
     public void deliver1() {
         //if (astate != ArmState.LIFT) return;
         //astate = ArmState.DELIVER1;
-        update(hHold1, shoulder.getPosition());
-        wstate = WristState.LEVEL1;
+        //update(hHold1, shoulder.getPosition());
+        //wstate = WristState.LEVEL1;
         moveToTarget(-210, 0.2);
         //orginally -220
     }
@@ -139,33 +139,37 @@ public class SwingArmS extends Subsystem {
     public void deliver2() {
         //if (astate != ArmState.LIFT) return;
         //astate = ArmState.DELIVER2;
-        update(hHold2, shoulder.getPosition());
-        wstate = WristState.LEVEL2;
+        //update(hHold2, shoulder.getPosition());
         moveToTarget(-350, 0.2);
+        //wstate = WristState.LEVEL2;
         //orginally -350
     }
 
     public void deliver0 () {
         //astate = ArmState.DELIVER3;
-        update(hHold0, shoulder.getPosition());
-        wstate = WristState.LEVEL1;
+        //update(hHold0, shoulder.getPosition());
+        //wstate = WristState.LEVEL1;
         moveToTarget(-175, 0.1);
+    }
+    public void newDeliver(){
+        //update(hHold0, shoulder.getPosition());
+        moveToTarget(-175,0.2);
+
     }
 
 
-    public double getHandPos() {return hand.getPosition(); }
-    public double getShoulderPos() {return shoulder.getPosition(); }
-    public double getMWristPosition() { return wrist.getCurrentPosition(); }
+    //public double getHandPos() {return hand.getPosition(); }
+    //public double getShoulderPos() {return shoulder.getPosition(); }
 
     public void modifySetpoint(double amount) {
         setpointTarget = setpoint+amount;
     }
 
-    public ArmState getState() {
+    /*(Put "astate" after "return")public ArmState getState() {
         return astate;
-    }
+    }*/
 
-    public void setMode(ArmState state) {
+   /* public void setMode(ArmState state) {
         switch (state) {
             case HOME:
                 if (astate == ArmState.INTAKE || astate == ArmState.LIFT )
@@ -212,27 +216,27 @@ public class SwingArmS extends Subsystem {
                 if (astate == ArmState.RELEASE)
                     this.astate = state;
                 break;
-        }
+        }*/
+
         //if (state == ArmState.HOME && (astate != ArmState.LIFT && astate != ArmState.INTAKE)) return;
         //else if (state == ArmState.INTAKE && astate == ArmState.HOME) return;
         //else if (state == ArmState.LEFT && astate != ArmState.LIFT) return;
         //else if (state == ArmState.RIGHT && astate != ArmState.LIFT) return;
         //else if (state == ArmState.DELIVER3 && (astate != ArmState.LEFT ||astate != ArmState.RIGHT )) return;
 
-    }
+    //}
 
     @Override
     public void initialize(HardwareMap hardwareMap) {
-        astate = ArmState.HOME;
-        wstate = WristState.HOME;
-        sstate = ShoulderState.MIDDLE;
+        //astate = ArmState.HOME;
+        //wstate = WristState.HOME;
+        //sstate = ShoulderState.MIDDLE;
 
         hand = hardwareMap.get(Servo.class, "hand");
         shoulder = hardwareMap.get(Servo.class, "shoulder");
         update(hHome, sMiddle);
 
-        wrist = hardwareMap.get(DcMotorEx.class, "mWrist");
-        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //wristHome();
 
@@ -250,7 +254,7 @@ public class SwingArmS extends Subsystem {
 
     @Override
     public void runPeriodic() {
-        switch (astate) {
+        /*switch (astate) {
             case HOME:
                 wristHome();
                 break;
@@ -290,13 +294,13 @@ public class SwingArmS extends Subsystem {
             case RETRIVE:
                 retrieve();
                 break;
-        }
+        }*/
 
         setpoint = (setpointTarget - setpoint) / 2 + setpoint;
 
-        telemetry.addLine("[ARM]")
-                .addData("State ", astate)
-                .addData("Current ", "h:%f.2 w:%d s%f.2", getHandPos(), wrist.getCurrentPosition(), getShoulderPos());
+        telemetry.addLine("[ARM]");
+                //.addData("State ", astate)
+              //  .addData("Current ", "h:%f.2 w:%d s%f.2", getHandPos(), wrist.getCurrentPosition(), getShoulderPos());
     }
 
     @Override
@@ -306,10 +310,10 @@ public class SwingArmS extends Subsystem {
 
     public enum WristState{
         HOME,
-        LEVEL1,
-        LEVEL2,
-        LEVEL3,
-        LEVEL0,
+        //LEVEL1,
+        //LEVEL2,
+        //LEVEL3,
+        //LEVEL0,
         WRISTSET,
         WRISTADJUST,
         TEAM
@@ -335,8 +339,8 @@ public class SwingArmS extends Subsystem {
         RETRIVE,
     }
 
-    WristState wstate;
-    ShoulderState sstate;
-    ArmState astate;
-    ArmState apstate;
+    //WristState wstate;
+    //ShoulderState sstate;
+    //ArmState astate;
+    //ArmState apstate;
 }

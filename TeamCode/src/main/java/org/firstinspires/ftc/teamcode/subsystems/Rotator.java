@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+/*package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.ftc11392.sequoia.subsystem.Subsystem;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,4 +49,4 @@ public class Rotator extends Subsystem {
     public void stop() {
         rotator.setVelocity(0);
     }
-}
+}*/

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.ftc11392.sequoia.subsystem.Subsystem;
+/*import com.ftc11392.sequoia.subsystem.Subsystem;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -54,4 +54,4 @@ public class Gripper extends Subsystem {
     public enum GripperState {
         OPEN, CLOSED;
     }
-}
+}*/

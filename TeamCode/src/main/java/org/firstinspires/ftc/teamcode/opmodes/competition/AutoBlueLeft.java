@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.competition;
+/*package org.firstinspires.ftc.teamcode.opmodes.competition;
 
 
 import java.util.HashMap;
@@ -159,4 +159,4 @@ public class AutoBlueLeft extends SequoiaOpMode {
     }
 
 
-}
+}*/

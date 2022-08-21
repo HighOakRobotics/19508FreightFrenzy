@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Carousel;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrainMecanumBasic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.SwingArm;
-import org.firstinspires.ftc.teamcode.subsystems.TeamShipping;
 
 @TeleOp(name = "swing arm", group = "Quackology")
 @Disabled
@@ -17,7 +16,6 @@ public class SwingArmOpMode extends OpMode {
     private DriveTrainMecanumBasic drive;
     private Intake intake;
     private SwingArm arm;
-    private TeamShipping teamShipping;
     private Carousel carousel;
 
     @Override
@@ -29,8 +27,8 @@ public class SwingArmOpMode extends OpMode {
         carousel.init();
         arm = new SwingArm(hardwareMap);
         arm.init();
-        teamShipping = new TeamShipping(hardwareMap);
-        teamShipping.init();
+        //teamShipping = new TeamShipping(hardwareMap);
+        //teamShipping.init();
 
     }
 
@@ -39,9 +37,9 @@ public class SwingArmOpMode extends OpMode {
      */
     @Override
     public void init_loop() {
-        telemetry.addData("hand ", "%f2.1", arm.getHandPos());
-        telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
-        telemetry.addData("m wrist ", "%f2.1", arm.getMWristPosition());
+        //telemetry.addData("hand ", "%f2.1", arm.getHandPos());
+        //telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
+        //telemetry.addData("m wrist ", "%f2.1", arm.getMWristPosition());
         telemetry.update();
     }
 
@@ -67,7 +65,7 @@ public class SwingArmOpMode extends OpMode {
         else if(gamepad1.a) carousel.stop();
         else if(gamepad1.x) carousel.blue();
 
-        if(gamepad1.right_bumper){
+        /*if(gamepad1.right_bumper){
             teamShipping.down();
         }
         else if(gamepad1.left_bumper){
@@ -78,22 +76,21 @@ public class SwingArmOpMode extends OpMode {
         }
         else if(gamepad1.right_trigger >= 0.6){
             teamShipping.detach();
-        }
+        }*/
 
         if (gamepad2.dpad_right) arm.right();
         else if (gamepad2.dpad_left) arm.left();
         else if (gamepad2.dpad_up) arm.mWristLift();
         else if (gamepad2.dpad_down) arm.mWristHome();
-        else if (gamepad2.a) arm.intake();
+        //else if (gamepad2.a) arm.intake();
         else if (gamepad2.x ) arm.deliver1();
         else if (gamepad2.b) arm.deliver2();
         else if (gamepad2.y) arm.deliver3();
         else if (gamepad2.right_bumper) arm.release();
         else if (gamepad2.left_bumper) arm.retrieve();
 
-        telemetry.addData("hand ", "%f2.1", arm.getHandPos());
-        telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
-        telemetry.addData("m wrist ", "%f2.1", arm.getMWristPosition());
+        //telemetry.addData("hand ", "%f2.1", arm.getHandPos());
+        //telemetry.addData("shoulder ", "%f2.1", arm.getShoulderPos());
         telemetry.update();
     }
 
